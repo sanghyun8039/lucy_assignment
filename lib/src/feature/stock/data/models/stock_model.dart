@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:lucy_assignment_1/src/feature/stock/domain/entities/stock_entity.dart';
+import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 
 part 'stock_model.freezed.dart';
 part 'stock_model.g.dart';

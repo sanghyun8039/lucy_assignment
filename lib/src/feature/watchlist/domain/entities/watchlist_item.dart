@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:lucy_assignment_1/src/core/constants/alert_type.dart';
+import 'package:lucy_assignment/src/core/constants/alert_type.dart';
 
 part 'watchlist_item.freezed.dart';
 

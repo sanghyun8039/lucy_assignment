@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:lucy_assignment_1/src/core/constants/alert_type.dart';
-import 'package:lucy_assignment_1/src/feature/watchlist/domain/entities/watchlist_item.dart';
+import 'package:lucy_assignment/src/core/constants/alert_type.dart';
+import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_item.dart';
 
 part 'watchlist_model.freezed.dart';
 part 'watchlist_model.g.dart';

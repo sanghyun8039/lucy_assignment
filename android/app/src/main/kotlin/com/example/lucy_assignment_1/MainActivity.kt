@@ -1,4 +1,4 @@
-package com.example.lucy_assignment_1
+package com.example.lucy_assignment
 
 import io.flutter.embedding.android.FlutterActivity
 

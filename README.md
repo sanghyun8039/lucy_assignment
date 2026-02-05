@@ -1,4 +1,4 @@
-# lucy_assignment_1
+# lucy_assignment
 
 A new Flutter project.
 
