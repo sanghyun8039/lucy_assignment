@@ -8,7 +8,17 @@ class WatchlistRepositoryImpl implements WatchlistRepository {
   final WatchlistLocalDataSource _localDataSource;
   final StockRemoteDataSource _remoteDataSource;
 
-  WatchlistRepositoryImpl(this._localDataSource, this._remoteDataSource);
+  WatchlistRepositoryImpl({
+    required WatchlistLocalDataSource localDataSource,
+    required StockRemoteDataSource remoteDataSource,
+  }) : _localDataSource = localDataSource,
+       _remoteDataSource = remoteDataSource {
+    // Watchlist 변경 감지하여 RemoteDataSource에 구독 리스트 업데이트
+    _localDataSource.watchWatchlist().listen((list) {
+      final codes = list.map((e) => e.stockCode).toList();
+      _remoteDataSource.setWatchedStocks(codes);
+    });
+  }
 
   @override
   Future<void> addWatchlistItem(WatchlistItem item) {

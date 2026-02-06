@@ -2,11 +2,12 @@ import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_
 import 'package:lucy_assignment/src/feature/watchlist/domain/repos/watchlist_repository.dart';
 
 class UpdateWatchlistItemUseCase {
-  final WatchlistRepository _repository;
+  final WatchlistRepository _watchlistRepository;
 
-  UpdateWatchlistItemUseCase(this._repository);
+  UpdateWatchlistItemUseCase({required WatchlistRepository watchlistRepository})
+    : _watchlistRepository = watchlistRepository;
 
   Future<void> call(WatchlistItem item) {
-    return _repository.updateWatchlistItem(item);
+    return _watchlistRepository.updateWatchlistItem(item);
   }
 }

@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // Filtering Logic
                   final filteredStocks = allStocks.where((stock) {
                     final query = _searchQuery.toLowerCase();
-                    final name = stock.stockName.toLowerCase();
+                    final name = stock.stockName?.toLowerCase() ?? "";
                     final code = stock.stockCode.toLowerCase();
                     return name.contains(query) || code.contains(query);
                   }).toList();

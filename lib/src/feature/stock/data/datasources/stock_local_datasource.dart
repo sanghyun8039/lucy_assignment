@@ -5,6 +5,7 @@ import 'package:lucy_assignment/src/feature/stock/data/models/stock_model.dart';
 
 abstract class StockLocalDataSource {
   Future<List<StockModel>> getStocks();
+  Future<StockModel?> getStock(String stockCode);
 }
 
 class StockLocalDataSourceImpl implements StockLocalDataSource {
@@ -17,5 +18,11 @@ class StockLocalDataSourceImpl implements StockLocalDataSource {
     return (json['output'] as List<dynamic>)
         .map((e) => StockModel.fromJson(e))
         .toList();
+  }
+
+  @override
+  Future<StockModel?> getStock(String stockCode) async {
+    final stocks = await getStocks();
+    return stocks.firstWhere((stock) => stock.stockCode == stockCode);
   }
 }

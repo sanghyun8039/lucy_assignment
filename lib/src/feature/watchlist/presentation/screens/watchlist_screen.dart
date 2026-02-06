@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:lucy_assignment/src/core/di/service_locator.dart';
+import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
+import 'package:lucy_assignment/src/feature/stock/domain/usecases/get_stock_usecase.dart';
 import 'package:provider/provider.dart';
+import 'package:lucy_assignment/src/core/design_system/colors.dart';
 import 'package:lucy_assignment/src/feature/watchlist/presentation/providers/watchlist_provider.dart';
+import 'package:lucy_assignment/src/feature/watchlist/presentation/widgets/watchlist_tile.dart';
 
 class WatchlistScreen extends StatelessWidget {
   const WatchlistScreen({super.key});
@@ -21,42 +26,20 @@ class WatchlistScreen extends StatelessWidget {
             );
           }
 
-          return ListView.builder(
+          return ListView.separated(
             itemCount: watchlist.length,
+            separatorBuilder: (context, index) =>
+                const Divider(height: 1, color: AppColors.borderLight),
             itemBuilder: (context, index) {
               final item = watchlist[index];
-              final stockPrice = provider.getPrice(item.stockCode);
-
-              // stockPrice가 아직 없으면 (초기 로딩 등) 로딩 표시 혹은 기본값
-              final priceText = stockPrice != null
-                  ? '${stockPrice.currentPrice}원'
-                  : '...';
-
-              final changeRateText = stockPrice != null
-                  ? '${stockPrice.changeRate.toStringAsFixed(2)}%'
-                  : '';
-
-              final changeColor = (stockPrice?.changeRate ?? 0) > 0
-                  ? Colors.red
-                  : ((stockPrice?.changeRate ?? 0) < 0
-                        ? Colors.blue
-                        : Colors.grey);
-
-              return ListTile(
-                title: Text(
-                  item.stockCode,
-                  style: const TextStyle(color: Colors.white),
-                ),
-                subtitle: Text(
-                  '$priceText  $changeRateText',
-                  style: TextStyle(color: changeColor),
-                ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.grey),
-                  onPressed: () {
-                    provider.removeWatchlistItem(item.stockCode);
-                  },
-                ),
+              return FutureBuilder<StockEntity?>(
+                future: sl<GetStockUseCase>().call(item.stockCode),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data != null) {
+                    return WatchlistTile(item: snapshot.data!);
+                  }
+                  return const SizedBox.shrink();
+                },
               );
             },
           );

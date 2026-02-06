@@ -2,11 +2,12 @@ import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_
 import 'package:lucy_assignment/src/feature/watchlist/domain/repos/watchlist_repository.dart';
 
 class GetWatchStreamUseCase {
-  final WatchlistRepository _repository;
+  final WatchlistRepository _watchlistRepository;
 
-  GetWatchStreamUseCase(this._repository);
+  GetWatchStreamUseCase({required WatchlistRepository watchlistRepository})
+    : _watchlistRepository = watchlistRepository;
 
   Stream<List<WatchlistItem>> call() {
-    return _repository.getWatchlistStream();
+    return _watchlistRepository.getWatchlistStream();
   }
 }

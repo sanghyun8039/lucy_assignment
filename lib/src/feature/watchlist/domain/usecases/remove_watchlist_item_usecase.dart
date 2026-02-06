@@ -1,11 +1,12 @@
 import 'package:lucy_assignment/src/feature/watchlist/domain/repos/watchlist_repository.dart';
 
 class RemoveWatchlistItemUseCase {
-  final WatchlistRepository _repository;
+  final WatchlistRepository _watchlistRepository;
 
-  RemoveWatchlistItemUseCase(this._repository);
+  RemoveWatchlistItemUseCase({required WatchlistRepository watchlistRepository})
+    : _watchlistRepository = watchlistRepository;
 
   Future<void> call(String stockCode) {
-    return _repository.removeWatchlistItem(stockCode);
+    return _watchlistRepository.removeWatchlistItem(stockCode);
   }
 }

@@ -18,4 +18,10 @@ class StockRepositoryImpl implements StockRepository {
     final stocks = await _localDataSource.getStocks();
     return stocks.map((e) => e.toEntity()).toList();
   }
+
+  @override
+  Future<StockEntity?> getStock(String stockCode) async {
+    final stock = await _localDataSource.getStock(stockCode);
+    return stock?.toEntity();
+  }
 }

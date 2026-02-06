@@ -48,7 +48,7 @@ class MarketsBottomSheetHeader extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    stock.stockName,
+                    stock.stockName ?? "",
                     style: AppTypography.titleLarge.copyWith(
                       fontWeight: FontWeight.bold,
                     ),

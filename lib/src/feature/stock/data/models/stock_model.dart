@@ -9,7 +9,7 @@ part 'stock_model.g.dart';
 abstract class StockModel with _$StockModel {
   const StockModel._();
   factory StockModel({
-    required String type,
+    String? type,
     @JsonKey(name: 'mksc_shrn_iscd') required String stockCode,
     @JsonKey(name: 'hts_kor_isnm') String? stockName, // 종목명 추가 권장
     @JsonKey(name: 'stck_prpr', fromJson: Parsers.parsePrice)

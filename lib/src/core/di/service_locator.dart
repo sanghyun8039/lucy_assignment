@@ -9,6 +9,7 @@ import 'package:lucy_assignment/src/feature/stock/data/datasources/stock_local_d
 import 'package:lucy_assignment/src/feature/stock/data/datasources/stock_remote_datasource.dart';
 import 'package:lucy_assignment/src/feature/stock/data/repos/stock_repository_impl.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/repos/stock_repository.dart';
+import 'package:lucy_assignment/src/feature/stock/domain/usecases/get_stock_usecase.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/usecases/get_stocks_usecase.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lucy_assignment/src/feature/watchlist/data/datasources/watchlist_local_datasource.dart';
@@ -45,6 +46,7 @@ Future<void> initServiceLocator() async {
   // Feature: Stock
   // UseCases
   sl.registerLazySingleton(() => GetStocksUseCase(stockRepository: sl()));
+  sl.registerLazySingleton(() => GetStockUseCase(stockRepository: sl()));
 
   // Repository
   sl.registerLazySingleton<StockRepository>(
@@ -53,7 +55,7 @@ Future<void> initServiceLocator() async {
 
   // DataSources
   sl.registerLazySingleton<StockRemoteDataSource>(
-    () => MockStockRemoteDataSource(sl()),
+    () => MockStockRemoteDataSource(localDataSource: sl()),
   );
   sl.registerLazySingleton<StockLocalDataSource>(
     () => StockLocalDataSourceImpl(),
@@ -61,15 +63,26 @@ Future<void> initServiceLocator() async {
 
   // Feature: Watchlist
   // UseCases
-  sl.registerLazySingleton(() => GetPriceStreamUseCase(sl()));
-  sl.registerLazySingleton(() => GetWatchStreamUseCase(sl()));
-  sl.registerLazySingleton(() => AddWatchlistItemUseCase(sl()));
-  sl.registerLazySingleton(() => RemoveWatchlistItemUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateWatchlistItemUseCase(sl()));
+  sl.registerLazySingleton(
+    () => GetPriceStreamUseCase(watchlistRepository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => GetWatchStreamUseCase(watchlistRepository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => AddWatchlistItemUseCase(watchlistRepository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => RemoveWatchlistItemUseCase(watchlistRepository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => UpdateWatchlistItemUseCase(watchlistRepository: sl()),
+  );
 
   // Repository
   sl.registerLazySingleton<WatchlistRepository>(
-    () => WatchlistRepositoryImpl(sl(), sl()),
+    () =>
+        WatchlistRepositoryImpl(localDataSource: sl(), remoteDataSource: sl()),
   );
 
   // DataSources

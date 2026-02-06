@@ -2,4 +2,5 @@ import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.d
 
 abstract class StockRepository {
   Future<List<StockEntity>> getStocks();
+  Future<StockEntity?> getStock(String stockCode);
 }

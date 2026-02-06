@@ -46,7 +46,9 @@ class StockListTile extends StatelessWidget {
                         : AppColors.backgroundDark,
                     alignment: Alignment.center,
                     child: Text(
-                      stock.stockName.isNotEmpty ? stock.stockName[0] : '',
+                      stock.stockName?.isNotEmpty ?? false
+                          ? stock.stockName![0]
+                          : '',
                       style: AppTypography.bodyLarge.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).brightness == Brightness.light
@@ -67,7 +69,7 @@ class StockListTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildHighlightedText(
-                  text: stock.stockName,
+                  text: stock.stockName ?? "",
                   query: searchQuery,
                   style: AppTypography.bodyLarge.copyWith(
                     fontWeight: FontWeight.w600,
