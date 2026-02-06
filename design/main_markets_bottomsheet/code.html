@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Watchlist - Target Price</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#197fe6",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111921",
+                        "semantic-green": "#00C805",
+                        "semantic-red": "#FF3B30",
+                        "surface-dark": "#1E2933",
+                        "surface-light-gray": "#2C3E50",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.25rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .hide-scrollbar::-webkit-scrollbar {
+                display: none;
+            }
+            .hide-scrollbar {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display h-screen flex flex-col overflow-hidden text-slate-900 dark:text-white antialiased">
+<div class="flex-1 flex flex-col opacity-40 pointer-events-none">
+<header class="flex-none px-4 pt-12 pb-2 bg-background-light dark:bg-background-dark border-b border-gray-200 dark:border-gray-800">
+<div class="flex items-center justify-between h-11">
+<h1 class="text-3xl font-bold tracking-tight">Watchlist</h1>
+<button class="text-primary font-semibold text-base">Edit</button>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto px-4 py-2 space-y-3">
+<div class="flex justify-between items-center px-2 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+<span>Symbol</span>
+<span>Price / 24h</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-white dark:bg-surface-dark rounded-xl border border-gray-100 dark:border-gray-800">
+<div class="flex items-center gap-4">
+<div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 h-12 w-12 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-gray-400">laptop_mac</span>
+</div>
+<div>
+<h3 class="font-bold text-base leading-tight">AAPL</h3>
+<p class="text-gray-500 text-sm font-medium">Apple Inc.</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="font-bold text-base tracking-tight">$175.30</span>
+<div class="flex items-center bg-semantic-green/10 px-2 py-0.5 rounded text-semantic-green text-sm font-semibold">
+<span class="material-symbols-outlined text-[14px] mr-0.5">arrow_upward</span>
+                        1.2%
+                    </div>
+</div>
+</div>
+</main>
+</div>
+<div class="fixed inset-0 bg-black/60 z-30 flex items-end">
+<div class="w-full bg-white dark:bg-background-dark rounded-t-[32px] px-6 pt-2 pb-10 shadow-2xl border-t border-gray-200 dark:border-gray-800">
+<div class="w-10 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full mx-auto my-3"></div>
+<div class="flex items-center justify-between mt-2 mb-6">
+<div class="flex items-center gap-3">
+<div class="bg-gray-100 dark:bg-surface-dark rounded-lg p-2 h-10 w-10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">laptop_mac</span>
+</div>
+<div>
+<h2 class="text-lg font-bold">Apple Inc.</h2>
+<p class="text-gray-500 text-sm font-medium uppercase tracking-wider">AAPL</p>
+</div>
+</div>
+<button class="bg-gray-100 dark:bg-surface-dark p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+<span class="material-symbols-outlined text-gray-500 text-xl">close</span>
+</button>
+</div>
+<div class="bg-gray-50 dark:bg-surface-dark/50 p-4 rounded-2xl mb-6 flex justify-between items-center border border-gray-100 dark:border-gray-800">
+<span class="text-gray-500 font-medium">Current Price</span>
+<div class="text-right">
+<div class="text-xl font-bold">$175.30</div>
+<div class="text-semantic-green text-xs font-semibold flex items-center justify-end">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+                        +1.20 (0.69%)
+                    </div>
+</div>
+</div>
+<div class="space-y-6">
+<div>
+<label class="block text-sm font-semibold text-gray-500 mb-2 ml-1">Target Price</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xl">$</span>
+<input class="w-full bg-gray-100 dark:bg-surface-dark border-none rounded-2xl py-4 pl-8 pr-4 text-xl font-bold focus:ring-2 focus:ring-primary text-slate-900 dark:text-white" placeholder="0.00" step="0.01" type="number" value="180.00"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-semibold text-gray-500 mb-2 ml-1">Alert Condition</label>
+<div class="grid grid-cols-3 gap-1 bg-gray-100 dark:bg-surface-dark p-1 rounded-xl">
+<button class="bg-white dark:bg-gray-700 shadow-sm rounded-lg py-2 text-sm font-semibold text-primary">
+                            Upper
+                        </button>
+<button class="text-gray-500 dark:text-gray-400 py-2 text-sm font-semibold hover:bg-white/50 dark:hover:bg-white/5 rounded-lg transition-colors">
+                            Lower
+                        </button>
+<button class="text-gray-500 dark:text-gray-400 py-2 text-sm font-semibold hover:bg-white/50 dark:hover:bg-white/5 rounded-lg transition-colors">
+                            Bidir.
+                        </button>
+</div>
+</div>
+<div class="flex items-center justify-between py-2">
+<div class="flex items-center gap-3">
+<div class="bg-primary/10 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary text-xl">notifications_active</span>
+</div>
+<div>
+<span class="block font-semibold">Push Notifications</span>
+<span class="text-xs text-gray-500">Alert me when target is hit</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-semantic-green"></div>
+</label>
+</div>
+<button class="w-full bg-primary hover:bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] mt-2">
+                    Add to Watchlist
+                </button>
+</div>
+</div>
+</div>
+<nav class="flex-none bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 pb-6 pt-2 fixed bottom-0 w-full z-10 opacity-20 pointer-events-none">
+<div class="flex items-center justify-around w-full">
+<a class="flex flex-col items-center gap-1 p-2 text-gray-500" href="#">
+<span class="material-symbols-outlined text-[26px]">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary" href="#">
+<span class="material-symbols-outlined text-[26px] fill-current">monitoring</span>
+<span class="text-[10px] font-medium">Watchlist</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-gray-500" href="#">
+<span class="material-symbols-outlined text-[26px]">pie_chart</span>
+<span class="text-[10px] font-medium">Portfolio</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-gray-500" href="#">
+<span class="material-symbols-outlined text-[26px]">newspaper</span>
+<span class="text-[10px] font-medium">News</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-gray-500" href="#">
+<span class="material-symbols-outlined text-[26px]">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</a>
+</div>
+</nav>
+
+</body></html>

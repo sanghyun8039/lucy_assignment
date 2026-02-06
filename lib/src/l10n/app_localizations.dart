@@ -115,6 +115,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search for stocks, ETFs, etc.'**
   String get searchBarPlaceholder;
+
+  /// No description provided for @currentPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Price'**
+  String get currentPrice;
+
+  /// No description provided for @alertCondition.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert Condition'**
+  String get alertCondition;
+
+  /// No description provided for @pushNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Push Notifications'**
+  String get pushNotifications;
+
+  /// No description provided for @targetPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Price'**
+  String get targetPrice;
+
+  /// No description provided for @upper.
+  ///
+  /// In en, this message translates to:
+  /// **'Upper'**
+  String get upper;
+
+  /// No description provided for @lower.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower'**
+  String get lower;
+
+  /// No description provided for @bidir.
+  ///
+  /// In en, this message translates to:
+  /// **'Bidir.'**
+  String get bidir;
+
+  /// No description provided for @addToWatchlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to Watchlist'**
+  String get addToWatchlist;
 }
 
 class _AppLocalizationsDelegate

@@ -2,5 +2,13 @@
     "@@locale": "en",
     "markets": "Markets",
     "noResultsFound": "No results found",
-    "searchBarPlaceholder": "Search for stocks, ETFs, etc."
+    "searchBarPlaceholder": "Search for stocks, ETFs, etc.",
+    "currentPrice": "Current Price",
+    "alertCondition": "Alert Condition",
+    "pushNotifications": "Push Notifications",
+    "targetPrice": "Target Price",
+    "upper": "Upper",
+    "lower": "Lower",
+    "bidir": "Bidir.",
+    "addToWatchlist": "Add to Watchlist"
 }

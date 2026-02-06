@@ -9,7 +9,7 @@ abstract class WatchlistItem with _$WatchlistItem {
   const factory WatchlistItem({
     required String stockCode,
     int? targetPrice,
-    @Default(AlertType.upperLimit) AlertType alertType,
+    @Default(AlertType.upper) AlertType alertType,
     required DateTime createdAt,
   }) = _WatchlistItem;
 

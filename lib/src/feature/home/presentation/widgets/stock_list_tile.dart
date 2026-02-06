@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lucy_assignment/src/core/design_system/colors.dart';
 import 'package:lucy_assignment/src/core/design_system/typography.dart';
 import 'package:lucy_assignment/src/core/di/service_locator.dart';
+import 'package:lucy_assignment/src/feature/home/presentation/widgets/markets_bottom_sheet.dart';
 import 'package:lucy_assignment/src/feature/logo/domain/usecases/get_logo_file_usecase.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 import 'package:intl/intl.dart';
@@ -144,7 +145,22 @@ class StockListTile extends StatelessWidget {
 
           const SizedBox(width: 16),
           // Star Icon
-          Icon(Icons.star_border, color: AppColors.textSecondary, size: 28),
+          GestureDetector(
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                useRootNavigator: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => MarketsBottomSheet(stock: stock),
+              );
+            },
+            child: Icon(
+              Icons.star_border,
+              color: AppColors.textSecondary,
+              size: 28,
+            ),
+          ),
         ],
       ),
     );

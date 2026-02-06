@@ -2,5 +2,13 @@
     "@@locale": "ko",
     "markets": "시장",
     "noResultsFound": "검색 결과가 없습니다.",
-    "searchBarPlaceholder": "종목, ETF, 등 검색"
+    "searchBarPlaceholder": "종목, ETF, 등 검색",
+    "currentPrice": "현재가",
+    "alertCondition": "알림 조건",
+    "pushNotifications": "푸시 알림",
+    "targetPrice": "타겟가",
+    "upper": "상승",
+    "lower": "하락",
+    "bidir": "양방향",
+    "addToWatchlist": "관심종목 추가"
 }
