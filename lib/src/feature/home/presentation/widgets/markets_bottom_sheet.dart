@@ -2,16 +2,18 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:lucy_assignment/src/feature/watchlist/presentation/providers/watchlist_provider.dart';
 import 'package:lucy_assignment/src/core/constants/alert_type.dart';
 import 'package:lucy_assignment/src/core/design_system/colors.dart';
 import 'package:lucy_assignment/src/core/design_system/typography.dart';
-import 'package:lucy_assignment/src/core/di/service_locator.dart';
 import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart';
 import 'package:lucy_assignment/src/feature/home/presentation/components/markets_bottom_sheet/alert_condition.dart';
 import 'package:lucy_assignment/src/feature/home/presentation/components/markets_bottom_sheet/header.dart';
 import 'package:lucy_assignment/src/feature/home/presentation/components/markets_bottom_sheet/price_info_card.dart';
 import 'package:lucy_assignment/src/feature/home/presentation/components/markets_bottom_sheet/target_price_input.dart';
 import 'package:lucy_assignment/src/feature/logo/domain/usecases/get_logo_file_usecase.dart';
+import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_item.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 
 class MarketsBottomSheet extends StatefulWidget {
@@ -109,7 +111,28 @@ class _MarketsBottomSheetState extends State<MarketsBottomSheet> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final targetPrice = int.tryParse(
+                        _targetPriceController.text.replaceAll(',', ''),
+                      );
+                      final item = WatchlistItem(
+                        stockCode: widget.stock.stockCode,
+                        targetPrice: targetPrice,
+                        alertType: _selectedType,
+                        createdAt: DateTime.now(),
+                      );
+
+                      await context.read<WatchlistProvider>().addWatchlistItem(
+                        item,
+                      );
+
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('관심 종목에 추가되었습니다.')),
+                        );
+                        Navigator.pop(context);
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,

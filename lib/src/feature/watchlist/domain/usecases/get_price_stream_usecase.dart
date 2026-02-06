@@ -3,20 +3,10 @@ import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_
 import 'package:lucy_assignment/src/feature/watchlist/domain/repos/watchlist_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-class GetWatchlistStreamUseCase {
+class GetPriceStreamUseCase {
   final WatchlistRepository _repository;
 
-  GetWatchlistStreamUseCase(this._repository);
-
-  Stream<List<WatchlistItem>> call() {
-    return _repository.getWatchlistStream();
-  }
-}
-
-class GetTrackedPriceStreamUseCase {
-  final WatchlistRepository _repository;
-
-  GetTrackedPriceStreamUseCase(this._repository);
+  GetPriceStreamUseCase(this._repository);
 
   // Anti-Gravity: "즐겨찾기 한 것만 가격 추적"
   // 전체 가격 스트림과 관심 종목 리스트를 결합하여,
@@ -33,25 +23,5 @@ class GetTrackedPriceStreamUseCase {
         return isWatched ? priceUpdate : null;
       },
     ).whereNotNull(); // null (관심 없는 종목의 변동)은 무시
-  }
-}
-
-class AddWatchlistItemUseCase {
-  final WatchlistRepository _repository;
-
-  AddWatchlistItemUseCase(this._repository);
-
-  Future<void> call(WatchlistItem item) {
-    return _repository.addWatchlistItem(item);
-  }
-}
-
-class RemoveWatchlistItemUseCase {
-  final WatchlistRepository _repository;
-
-  RemoveWatchlistItemUseCase(this._repository);
-
-  Future<void> call(String stockCode) {
-    return _repository.removeWatchlistItem(stockCode);
   }
 }

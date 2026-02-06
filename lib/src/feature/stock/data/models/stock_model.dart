@@ -9,8 +9,9 @@ part 'stock_model.g.dart';
 abstract class StockModel with _$StockModel {
   const StockModel._();
   factory StockModel({
+    required String type,
     @JsonKey(name: 'mksc_shrn_iscd') required String stockCode,
-    @JsonKey(name: 'hts_kor_isnm') required String stockName, // 종목명 추가 권장
+    @JsonKey(name: 'hts_kor_isnm') String? stockName, // 종목명 추가 권장
     @JsonKey(name: 'stck_prpr', fromJson: Parsers.parsePrice)
     required int currentPrice,
     @JsonKey(name: 'prdy_ctrt', fromJson: Parsers.parseRate)
@@ -23,6 +24,7 @@ abstract class StockModel with _$StockModel {
 
   StockEntity toEntity() {
     return StockEntity(
+      type: type,
       stockCode: stockCode,
       stockName: stockName,
       currentPrice: currentPrice,

@@ -9,6 +9,9 @@ import 'package:lucy_assignment/src/feature/logo/domain/usecases/get_logo_file_u
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 import 'package:intl/intl.dart';
 
+import 'package:provider/provider.dart';
+import 'package:lucy_assignment/src/feature/watchlist/presentation/providers/watchlist_provider.dart';
+
 class StockListTile extends StatelessWidget {
   final StockEntity stock;
   final String searchQuery;
@@ -17,24 +20,10 @@ class StockListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isRising = stock.changeRate > 0;
-    final isFalling = stock.changeRate < 0;
-
-    final Color priceColor = isRising
-        ? AppColors.growth2
-        : (isFalling
-              ? AppColors.decline2
-              : Theme.of(context).brightness == Brightness.light
-              ? AppColors.textPrimaryLight
-              : AppColors.textPrimaryDark); // Blue or Default
-
-    final currencyFormat = NumberFormat("#,###");
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Row(
         children: [
-          // Logo
           Container(
             width: 48,
             height: 48,
@@ -51,7 +40,6 @@ class StockListTile extends StatelessWidget {
                   if (snapshot.hasData && snapshot.data != null) {
                     return Image.file(snapshot.data!, fit: BoxFit.cover);
                   }
-                  // Fallback: 첫 글자 표시
                   return Container(
                     color: Theme.of(context).brightness == Brightness.light
                         ? AppColors.backgroundLight
@@ -102,64 +90,78 @@ class StockListTile extends StatelessWidget {
             ),
           ),
 
-          // Price & Rate
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '${currencyFormat.format(stock.currentPrice)}원', // 원화 기준 가정
-                style: AppTypography.bodyLarge.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? AppColors.textPrimaryLight
-                      : AppColors.textPrimaryDark,
-                ),
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (isRising)
-                    const Icon(
-                      Icons.arrow_drop_up,
-                      color: AppColors.growth2,
-                      size: 16,
-                    ),
-                  if (isFalling)
-                    const Icon(
-                      Icons.arrow_drop_down,
-                      color: AppColors.decline2,
-                      size: 16,
-                    ),
+          // // Price & Rate
+          // Column(
+          //   crossAxisAlignment: CrossAxisAlignment.end,
+          //   children: [
+          //     Text(
+          //       '${currencyFormat.format(stock.currentPrice)}원',
+          //       style: AppTypography.bodyLarge.copyWith(
+          //         fontWeight: FontWeight.w600,
+          //         color: Theme.of(context).brightness == Brightness.light
+          //             ? AppColors.textPrimaryLight
+          //             : AppColors.textPrimaryDark,
+          //       ),
+          //     ),
+          //     Row(
+          //       mainAxisSize: MainAxisSize.min,
+          //       children: [
+          //         if (isRising)
+          //           const Icon(
+          //             Icons.arrow_drop_up,
+          //             color: AppColors.growth2,
+          //             size: 16,
+          //           ),
+          //         if (isFalling)
+          //           const Icon(
+          //             Icons.arrow_drop_down,
+          //             color: AppColors.decline2,
+          //             size: 16,
+          //           ),
 
-                  Text(
-                    '${stock.changeRate.abs().toStringAsFixed(1)}%',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: priceColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+          //         Text(
+          //           '${stock.changeRate.abs().toStringAsFixed(1)}%',
+          //           style: AppTypography.bodySmall.copyWith(
+          //             color: priceColor,
+          //             fontWeight: FontWeight.w500,
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ],
+          // ),
 
-          const SizedBox(width: 16),
+          // const SizedBox(width: 16),
           // Star Icon
-          GestureDetector(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                useRootNavigator: true,
-                backgroundColor: Colors.transparent,
-                builder: (context) => MarketsBottomSheet(stock: stock),
+          Consumer<WatchlistProvider>(
+            builder: (context, provider, child) {
+              final isWatched = provider.isWatched(stock.stockCode);
+              return GestureDetector(
+                onTap: isWatched
+                    ? () {
+                        context.read<WatchlistProvider>().removeWatchlistItem(
+                          stock.stockCode,
+                        );
+                      }
+                    : () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          useRootNavigator: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) =>
+                              MarketsBottomSheet(stock: stock),
+                        );
+                      },
+                child: Icon(
+                  isWatched ? Icons.star_rounded : Icons.star_border_rounded,
+                  color: isWatched
+                      ? AppColors.primary
+                      : AppColors.textSecondary,
+                  size: 28,
+                ),
               );
             },
-            child: Icon(
-              Icons.star_border,
-              color: AppColors.textSecondary,
-              size: 28,
-            ),
           ),
         ],
       ),

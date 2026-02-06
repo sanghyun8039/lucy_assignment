@@ -5,8 +5,9 @@ part 'stock_entity.freezed.dart';
 @freezed
 abstract class StockEntity with _$StockEntity {
   const factory StockEntity({
+    required String type,
     required String stockCode,
-    required String stockName,
+    String? stockName,
     required int currentPrice,
     required double changeRate,
     required DateTime? timestamp,
