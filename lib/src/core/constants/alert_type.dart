@@ -1,8 +1,5 @@
 enum AlertType {
-  upperLimit('상한가'),
-  lowerLimit('하한가'),
-  bidirectional('양방향');
-
-  final String name;
-  const AlertType(this.name);
+  upperLimit, // 목표가 이상 (상승 돌파)
+  lowerLimit, // 목표가 이하 (하락 돌파)
+  none,
 }

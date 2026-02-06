@@ -15,6 +15,7 @@ test:
 # build_runner 실행
 build:
 	flutter pub run build_runner build --delete-conflicting-outputs
+	flutter gen-l10n
 
 # 프로젝트 정리
 clean:
@@ -31,7 +32,7 @@ deep_clean: clean
 reset: deep_clean
 	flutter pub get
 	flutter pub run build_runner build --delete-conflicting-outputs
-	
+	flutter gen-l10n
 # 위의 모든 작업을PHONY로 선언하여 파일 이름과의 충돌을 방지
 .PHONY: get run test build clean
 

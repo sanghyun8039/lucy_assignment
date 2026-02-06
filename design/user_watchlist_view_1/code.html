@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Watchlist</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#197fe6",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111921",
+                        "semantic-green": "#00C805", // Standard finance green
+                        "semantic-red": "#FF3B30",   // Standard finance red
+                        "surface-dark": "#1E2933",   // Slightly lighter for cards
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Flash Animation for Real-time Updates */
+        @keyframes flash-green {
+            0% { background-color: rgba(0, 200, 5, 0.2); }
+            100% { background-color: transparent; }
+        }
+        @keyframes flash-red {
+            0% { background-color: rgba(255, 59, 48, 0.2); }
+            100% { background-color: transparent; }
+        }
+        .animate-flash-green {
+            animation: flash-green 2s ease-out;
+        }
+        .animate-flash-red {
+            animation: flash-red 2s ease-out;
+        }
+        /* Custom Scrollbar for clean look */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display h-screen flex flex-col overflow-hidden text-slate-900 dark:text-white antialiased selection:bg-primary selection:text-white">
+<!-- Top Navigation -->
+<header class="flex-none px-4 pt-12 pb-2 bg-background-light dark:bg-background-dark border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10">
+<div class="flex items-center justify-between h-11">
+<h1 class="text-3xl font-bold tracking-tight">Watchlist</h1>
+<button class="text-primary font-semibold text-base hover:opacity-80 transition-opacity">Edit</button>
+</div>
+</header>
+<!-- Main Content: Watchlist -->
+<main class="flex-1 overflow-y-auto hide-scrollbar px-4 py-2 space-y-3">
+<!-- List Header (Optional Context) -->
+<div class="flex justify-between items-center px-2 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+<span>Symbol</span>
+<span>Price / 24h</span>
+</div>
+<!-- Stock Item: AAPL (Neutral) -->
+<div class="relative group">
+<div class="flex items-center justify-between p-4 bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-all active:scale-[0.99] cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 h-12 w-12 flex items-center justify-center shrink-0">
+<!-- Placeholder logo using text/colors for simplicity or an icon -->
+<span class="material-symbols-outlined text-gray-400">laptop_mac</span>
+</div>
+<div>
+<h3 class="font-bold text-base leading-tight">AAPL</h3>
+<p class="text-gray-500 text-sm font-medium">Apple Inc.</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="font-bold text-base tabular-nums tracking-tight">$175.30</span>
+<div class="flex items-center bg-semantic-green/10 px-2 py-0.5 rounded text-semantic-green text-sm font-semibold tabular-nums">
+<span class="material-symbols-outlined text-[14px] mr-0.5">arrow_upward</span>
+                        1.2%
+                    </div>
+</div>
+</div>
+</div>
+<!-- Stock Item: TSLA (Flash Animation - Red) -->
+<div class="relative group">
+<!-- Flash overlay container -->
+<div class="absolute inset-0 rounded-xl pointer-events-none z-10 animate-flash-red"></div>
+<div class="flex items-center justify-between p-4 bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-all active:scale-[0.99] cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 h-12 w-12 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-gray-400">electric_car</span>
+</div>
+<div>
+<h3 class="font-bold text-base leading-tight">TSLA</h3>
+<p class="text-gray-500 text-sm font-medium">Tesla Inc.</p>
+</div>
+</div>
+<!-- Mini Chart Visual -->
+<div class="hidden sm:block flex-1 mx-4 h-8 opacity-40">
+<svg class="w-full h-full stroke-semantic-red fill-none stroke-2" preserveaspectratio="none" viewbox="0 0 100 30">
+<path d="M0,10 Q20,5 40,15 T100,25"></path>
+</svg>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="font-bold text-base tabular-nums tracking-tight">$240.50</span>
+<div class="flex items-center bg-semantic-red/10 px-2 py-0.5 rounded text-semantic-red text-sm font-semibold tabular-nums">
+<span class="material-symbols-outlined text-[14px] mr-0.5">arrow_downward</span>
+                        0.5%
+                    </div>
+</div>
+</div>
+</div>
+<!-- Stock Item: GOOGL (Neutral/Grey) -->
+<div class="relative group">
+<div class="flex items-center justify-between p-4 bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-all active:scale-[0.99] cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 h-12 w-12 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-gray-400">search</span>
+</div>
+<div>
+<h3 class="font-bold text-base leading-tight">GOOGL</h3>
+<p class="text-gray-500 text-sm font-medium">Alphabet Inc.</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="font-bold text-base tabular-nums tracking-tight">$130.00</span>
+<div class="flex items-center bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-gray-500 dark:text-gray-300 text-sm font-semibold tabular-nums">
+<span class="material-symbols-outlined text-[14px] mr-0.5">remove</span>
+                        0.0%
+                    </div>
+</div>
+</div>
+</div>
+<!-- Stock Item: BTC (Flash Animation - Green) -->
+<div class="relative group">
+<!-- Flash overlay container -->
+<div class="absolute inset-0 rounded-xl pointer-events-none z-10 animate-flash-green"></div>
+<div class="flex items-center justify-between p-4 bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-all active:scale-[0.99] cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 h-12 w-12 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-gray-400">currency_bitcoin</span>
+</div>
+<div>
+<h3 class="font-bold text-base leading-tight">BTC</h3>
+<p class="text-gray-500 text-sm font-medium">Bitcoin</p>
+</div>
+</div>
+<!-- Mini Chart Visual -->
+<div class="hidden sm:block flex-1 mx-4 h-8 opacity-40">
+<svg class="w-full h-full stroke-semantic-green fill-none stroke-2" preserveaspectratio="none" viewbox="0 0 100 30">
+<path d="M0,25 Q30,25 50,15 T100,5"></path>
+</svg>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="font-bold text-base tabular-nums tracking-tight">$42,000</span>
+<div class="flex items-center bg-semantic-green/10 px-2 py-0.5 rounded text-semantic-green text-sm font-semibold tabular-nums">
+<span class="material-symbols-outlined text-[14px] mr-0.5">arrow_upward</span>
+                        5.4%
+                    </div>
+</div>
+</div>
+</div>
+<!-- Stock Item: NVDA (Large Gain) -->
+<div class="relative group">
+<div class="flex items-center justify-between p-4 bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-all active:scale-[0.99] cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 h-12 w-12 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-gray-400">memory</span>
+</div>
+<div>
+<h3 class="font-bold text-base leading-tight">NVDA</h3>
+<p class="text-gray-500 text-sm font-medium">NVIDIA Corp</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="font-bold text-base tabular-nums tracking-tight">$485.12</span>
+<div class="flex items-center bg-semantic-green/10 px-2 py-0.5 rounded text-semantic-green text-sm font-semibold tabular-nums">
+<span class="material-symbols-outlined text-[14px] mr-0.5">arrow_upward</span>
+                        3.1%
+                    </div>
+</div>
+</div>
+</div>
+<!-- Stock Item: NFLX (Loss) -->
+<div class="relative group">
+<div class="flex items-center justify-between p-4 bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-all active:scale-[0.99] cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 h-12 w-12 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-gray-400">movie</span>
+</div>
+<div>
+<h3 class="font-bold text-base leading-tight">NFLX</h3>
+<p class="text-gray-500 text-sm font-medium">Netflix Inc.</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="font-bold text-base tabular-nums tracking-tight">$398.20</span>
+<div class="flex items-center bg-semantic-red/10 px-2 py-0.5 rounded text-semantic-red text-sm font-semibold tabular-nums">
+<span class="material-symbols-outlined text-[14px] mr-0.5">arrow_downward</span>
+                        1.4%
+                    </div>
+</div>
+</div>
+</div>
+<!-- Add New Button -->
+<button class="w-full py-4 mt-2 flex flex-col items-center justify-center gap-2 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl text-gray-500 hover:text-primary hover:border-primary hover:bg-primary/5 transition-all group">
+<span class="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform">add_circle</span>
+<span class="font-medium text-sm">Add Symbol</span>
+</button>
+<!-- Spacer for Bottom Nav -->
+<div class="h-24"></div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="flex-none bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 pb-6 pt-2 absolute bottom-0 w-full z-20">
+<div class="flex items-center justify-around w-full">
+<a class="flex flex-col items-center gap-1 p-2 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary" href="#">
+<span class="material-symbols-outlined text-[26px] fill-current">monitoring</span>
+<span class="text-[10px] font-medium">Watchlist</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">pie_chart</span>
+<span class="text-[10px] font-medium">Portfolio</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">newspaper</span>
+<span class="text-[10px] font-medium">News</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</a>
+</div>
+</nav>
+</body></html>
