@@ -12,13 +12,28 @@ class AppLocalizationsKo extends AppLocalizations {
   String get markets => '시장';
 
   @override
+  String get watchlist => '관심종목';
+
+  @override
   String get noResultsFound => '검색 결과가 없습니다.';
+
+  @override
+  String get noWatchlist => '관심 종목이 없습니다.';
+
+  @override
+  String get watchlistUpdated => '관심종목이 수정되었습니다.';
+
+  @override
+  String get watchlistAdded => '관심종목이 추가되었습니다.';
 
   @override
   String get searchBarPlaceholder => '종목, ETF, 등 검색';
 
   @override
   String get currentPrice => '현재가';
+
+  @override
+  String get closingPrice => '종가';
 
   @override
   String get alertCondition => '알림 조건';
@@ -40,4 +55,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get addToWatchlist => '관심종목 추가';
+
+  @override
+  String get update => '수정하기';
 }

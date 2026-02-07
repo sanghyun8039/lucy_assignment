@@ -11,9 +11,10 @@ import 'package:lucy_assignment/src/feature/stock/data/repos/stock_repository_im
 import 'package:lucy_assignment/src/feature/stock/domain/repos/stock_repository.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/usecases/get_stock_usecase.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/usecases/get_stocks_usecase.dart';
+import 'package:lucy_assignment/src/feature/stock/data/datasources/socket/stock_socket_manager.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lucy_assignment/src/feature/watchlist/data/datasources/watchlist_local_datasource.dart';
-import 'package:lucy_assignment/src/feature/watchlist/data/repositories/watchlist_repository_impl.dart';
+import 'package:lucy_assignment/src/feature/watchlist/data/repos/watchlist_repository_impl.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_item.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/repos/watchlist_repository.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/usecases/add_watchlist_item_usecase.dart';
@@ -55,11 +56,12 @@ Future<void> initServiceLocator() async {
 
   // DataSources
   sl.registerLazySingleton<StockRemoteDataSource>(
-    () => MockStockRemoteDataSource(localDataSource: sl()),
+    () => MockStockRemoteDataSource(localDataSource: sl(), socketManager: sl()),
   );
   sl.registerLazySingleton<StockLocalDataSource>(
     () => StockLocalDataSourceImpl(),
   );
+  sl.registerLazySingleton<StockSocketManager>(() => StockSocketManager());
 
   // Feature: Watchlist
   // UseCases

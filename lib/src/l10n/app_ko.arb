@@ -1,14 +1,20 @@
 {
     "@@locale": "ko",
     "markets": "시장",
+    "watchlist": "관심종목",
     "noResultsFound": "검색 결과가 없습니다.",
+    "noWatchlist": "관심 종목이 없습니다.",
+    "watchlistUpdated": "관심종목이 수정되었습니다.",
+    "watchlistAdded": "관심종목이 추가되었습니다.",
     "searchBarPlaceholder": "종목, ETF, 등 검색",
     "currentPrice": "현재가",
+    "closingPrice": "종가",
     "alertCondition": "알림 조건",
     "pushNotifications": "푸시 알림",
     "targetPrice": "타겟가",
     "upper": "상승",
     "lower": "하락",
     "bidir": "양방향",
-    "addToWatchlist": "관심종목 추가"
+    "addToWatchlist": "관심종목 추가",
+    "update": "수정하기"
 }

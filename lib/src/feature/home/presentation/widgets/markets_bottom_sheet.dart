@@ -17,30 +17,40 @@ import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 
 class MarketsBottomSheet extends StatefulWidget {
-  final StockEntity stock;
+  final StockEntity? stock;
+  final WatchlistItem? existingItem;
 
-  const MarketsBottomSheet({super.key, required this.stock});
+  const MarketsBottomSheet({super.key, required this.stock, this.existingItem});
 
   @override
   State<MarketsBottomSheet> createState() => _MarketsBottomSheetState();
 }
 
 class _MarketsBottomSheetState extends State<MarketsBottomSheet> {
-  final TextEditingController _targetPriceController = TextEditingController();
-  AlertType _selectedType = AlertType.upper;
+  late final TextEditingController _targetPriceController;
+  late AlertType _selectedType;
+
+  @override
+  void initState() {
+    super.initState();
+    final initialPrice = widget.existingItem?.targetPrice;
+    _targetPriceController = TextEditingController(
+      text: initialPrice != null
+          ? NumberFormat("#,###").format(initialPrice)
+          : '-',
+    );
+    _selectedType = widget.existingItem?.alertType ?? AlertType.upper;
+  }
+
+  @override
+  void dispose() {
+    _targetPriceController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final isRising = widget.stock.changeRate > 0;
-    final isFalling = widget.stock.changeRate < 0;
-
-    final Color priceColor = isRising
-        ? AppColors.growth2
-        : (isFalling
-              ? AppColors.decline2
-              : context.theme.brightness == Brightness.light
-              ? AppColors.textPrimaryLight
-              : AppColors.textPrimaryDark);
+    final isEditMode = widget.existingItem != null;
 
     return Padding(
       padding: EdgeInsets.only(
@@ -105,7 +115,7 @@ class _MarketsBottomSheetState extends State<MarketsBottomSheet> {
               // // Push Notifications
               // const SizedBox(height: 24),
 
-              // Add to Watchlist Button
+              // Add/Update Watchlist Button
               Padding(
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
                 child: SizedBox(
@@ -116,10 +126,11 @@ class _MarketsBottomSheetState extends State<MarketsBottomSheet> {
                         _targetPriceController.text.replaceAll(',', ''),
                       );
                       final item = WatchlistItem(
-                        stockCode: widget.stock.stockCode,
+                        stockCode: widget.stock?.stockCode ?? "",
                         targetPrice: targetPrice,
                         alertType: _selectedType,
-                        createdAt: DateTime.now(),
+                        createdAt:
+                            widget.existingItem?.createdAt ?? DateTime.now(),
                       );
 
                       await context.read<WatchlistProvider>().addWatchlistItem(
@@ -128,7 +139,13 @@ class _MarketsBottomSheetState extends State<MarketsBottomSheet> {
 
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('관심 종목에 추가되었습니다.')),
+                          SnackBar(
+                            content: Text(
+                              isEditMode
+                                  ? context.s.watchlistUpdated
+                                  : context.s.watchlistAdded,
+                            ),
+                          ),
                         );
                         Navigator.pop(context);
                       }
@@ -144,7 +161,7 @@ class _MarketsBottomSheetState extends State<MarketsBottomSheet> {
                       shadowColor: AppColors.primary.withValues(alpha: 0.2),
                     ),
                     child: Text(
-                      context.s.addToWatchlist,
+                      isEditMode ? context.s.update : context.s.addToWatchlist,
                       style: AppTypography.titleMedium.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,

@@ -8,7 +8,7 @@ import 'package:lucy_assignment/src/feature/logo/domain/usecases/get_logo_file_u
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 
 class MarketsBottomSheetHeader extends StatelessWidget {
-  final StockEntity stock;
+  final StockEntity? stock;
   const MarketsBottomSheetHeader({super.key, required this.stock});
 
   @override
@@ -32,7 +32,7 @@ class MarketsBottomSheetHeader extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: FutureBuilder<File?>(
-                  future: sl<GetLogoFileUseCase>().call(stock.stockCode),
+                  future: sl<GetLogoFileUseCase>().call(stock?.stockCode ?? ""),
                   builder: (context, snapshot) {
                     if (snapshot.hasData && snapshot.data != null) {
                       return ClipOval(
@@ -48,13 +48,13 @@ class MarketsBottomSheetHeader extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    stock.stockName ?? "",
+                    stock?.stockName ?? "",
                     style: AppTypography.titleLarge.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    stock.stockCode,
+                    stock?.stockCode ?? "",
                     style: AppTypography.bodySmall.copyWith(
                       color: AppColors.textSecondary,
                       fontWeight: FontWeight.w500,

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Watchlist</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#197fe6",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0B1118",
+                        "semantic-green": "#00C805", 
+                        "semantic-red": "#FF3B30",   
+                        "surface-dark": "#111921",
+                        "nav-blue": "#1a2433"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @keyframes flash-green {
+            0% { background-color: rgba(0, 200, 5, 0.2); }
+            100% { background-color: transparent; }
+        }
+        @keyframes flash-red {
+            0% { background-color: rgba(255, 59, 48, 0.2); }
+            100% { background-color: transparent; }
+        }
+        .animate-flash-green {
+            animation: flash-green 2s ease-out;
+        }
+        .animate-flash-red {
+            animation: flash-red 2s ease-out;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark font-display h-screen flex flex-col overflow-hidden text-white antialiased selection:bg-primary selection:text-white">
+<header class="flex-none px-4 pt-12 pb-2 bg-background-dark border-b border-gray-800 sticky top-0 z-10">
+<div class="flex items-center justify-between h-11">
+<h1 class="text-2xl font-bold">관심종목</h1>
+<button class="text-primary font-semibold text-base hover:opacity-80 transition-opacity">Edit</button>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto hide-scrollbar">
+<div class="divide-y divide-gray-800">
+<div class="relative group">
+<div class="flex items-center justify-between p-4 bg-background-dark hover:bg-gray-900 transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="bg-[#002C5F] rounded-full h-12 w-12 flex items-center justify-center shrink-0 overflow-hidden border border-gray-700">
+<img alt="Hyundai Logo" class="w-8 h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7RKRFVgeT7Z17z4nu3YJtf5Dw9ULBPejTyDt8zCOweE4T-tZDrvZL3_PxKX7cN6kFbsNQNiIcBfQIqP40CZXQRxBL4yIJ-0rLBfZ9wby7tmXhQNiDk0Gz8saQ_XG3QLDGfDJb1_taWmpHsbgaO0_ZpYjGiNiJXTAP1nHXFkFg4VzX4TSyBOEPZ6FbzvoFkt5hqVmY2b48UG-G3-qnB1m-vW4iz8gqFlvCYtJVxpqq1yhPfKcZkRdcbjnUq8CXLj-_cZ-pS5cBu60"/>
+</div>
+<div>
+<h3 class="font-bold text-base leading-tight">현대차</h3>
+<p class="text-gray-500 text-xs">005380</p>
+<div class="flex items-center mt-1 text-[11px] text-gray-400">
+<span>Target: 500,000 KRW</span>
+<span class="material-symbols-outlined text-[14px] ml-1 text-semantic-green">arrow_upward</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-end">
+<span class="font-bold text-base tabular-nums text-semantic-red">488,398원</span>
+<div class="flex items-center text-semantic-red text-xs font-medium">
+<span class="material-symbols-outlined text-[12px] mr-0.5">arrow_drop_up</span>
+                            0.60%
+                        </div>
+</div>
+<button class="p-2 text-gray-500 hover:text-white">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+</div>
+</div>
+</div>
+<div class="relative group">
+<div class="absolute inset-0 pointer-events-none z-10 animate-flash-red"></div>
+<div class="flex items-center justify-between p-4 bg-background-dark hover:bg-gray-900 transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="bg-black rounded-full h-12 w-12 flex items-center justify-center shrink-0 overflow-hidden border border-gray-700">
+<img alt="Samsung Logo" class="w-10 h-10 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClVXaGL5HA0R2VHK9mRDbOdUmFbt1XMNbbj7K6vF5pFDyZCRPAHKYLhZWAXOMUT11qB2ynaqh7DvcuG95NI7kCny2A5TUIzqgA47ap9_Ux5iGISjsx7-tllT1amR_SoSYSm5PGzorjDltBGbGnTPXNccuDV29JkZEka4HFpJy9_J4PiOEUIgITfXpw_8qPKLgwc8LYR7wQZNSdK2c7Cg2xxMqEtZ201exNMJErBba-P63UhA1d7I2Ux6oHtO2jLkIqPOYrbaWQT2A"/>
+</div>
+<div>
+<h3 class="font-bold text-base leading-tight">삼성전자</h3>
+<p class="text-gray-500 text-xs">005930</p>
+<div class="flex items-center mt-1 text-[11px] text-gray-400">
+<span>Target: 140,000 KRW</span>
+<span class="material-symbols-outlined text-[14px] ml-1 text-semantic-red">arrow_downward</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-end">
+<span class="font-bold text-base tabular-nums text-semantic-red">156,456원</span>
+<div class="flex items-center text-semantic-red text-xs font-medium">
+<span class="material-symbols-outlined text-[12px] mr-0.5">arrow_drop_up</span>
+                            0.75%
+                        </div>
+</div>
+<button class="p-2 text-gray-500 hover:text-white">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+</div>
+</div>
+</div>
+<div class="relative group">
+<div class="absolute inset-0 pointer-events-none z-10 animate-flash-green"></div>
+<div class="flex items-center justify-between p-4 bg-background-dark hover:bg-gray-900 transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="bg-white rounded-full h-12 w-12 flex items-center justify-center shrink-0 overflow-hidden border border-gray-700">
+<img alt="LG Energy Logo" class="w-8 h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIEKtiyoWJZ6HCHIjlj5NroasA7X0lvwtM3exD1TNeHB8IYsZkBssi-tBUC5KldCTmOf3jLu31A2ZQVU2dXEaAGTsFF2sjA9m8tA9aNU3FU-6-2nOcTFagy4eZOxzV3ptMnijQ6suFZEErZJbDuLZDk0sqPKfw9ooavvGvfPYtYLPjhMxQurVWhr37pgTEMfIsslp5-S4wkAbtoMplFJeZUXAkyCadJoHhVZWBaK4T60GaOC0G6l9IQzF8XLO48hMv6fpAR4hEtO0"/>
+</div>
+<div>
+<h3 class="font-bold text-base leading-tight">LG에너지솔루션</h3>
+<p class="text-gray-500 text-xs">373220</p>
+<div class="flex items-center mt-1 text-[11px] text-gray-400">
+<span>Target: 400,000 KRW</span>
+<span class="material-symbols-outlined text-[14px] ml-1 text-primary">swap_vert</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-end">
+<span class="font-bold text-base tabular-nums text-semantic-red">387,822원</span>
+<div class="flex items-center text-semantic-red text-xs font-medium">
+<span class="material-symbols-outlined text-[12px] mr-0.5">arrow_drop_up</span>
+                            0.99%
+                        </div>
+</div>
+<button class="p-2 text-gray-500 hover:text-white">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 mt-6 opacity-30 pointer-events-none">
+<div class="border-t border-gray-800 pt-4 text-xs text-center text-gray-500">
+            Long press to reorder items
+        </div>
+</div>
+<div class="h-24"></div>
+</main>
+<nav class="flex-none bg-nav-blue/95 backdrop-blur-md border-t border-gray-800 pb-8 pt-3 absolute bottom-0 w-full z-20">
+<div class="flex items-center justify-around w-full max-w-md mx-auto">
+<a class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary" href="#">
+<span class="material-symbols-outlined text-[26px] fill-1">monitoring</span>
+<span class="text-[10px] font-medium">Watchlist</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">pie_chart</span>
+<span class="text-[10px] font-medium">Portfolio</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">newspaper</span>
+<span class="text-[10px] font-medium">News</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</a>
+</div>
+</nav>
+
+</body></html>

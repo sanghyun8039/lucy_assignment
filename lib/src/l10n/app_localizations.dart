@@ -104,11 +104,35 @@ abstract class AppLocalizations {
   /// **'Markets'**
   String get markets;
 
+  /// No description provided for @watchlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Watchlist'**
+  String get watchlist;
+
   /// No description provided for @noResultsFound.
   ///
   /// In en, this message translates to:
   /// **'No results found'**
   String get noResultsFound;
+
+  /// No description provided for @noWatchlist.
+  ///
+  /// In en, this message translates to:
+  /// **'No watchlist'**
+  String get noWatchlist;
+
+  /// No description provided for @watchlistUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Watchlist updated'**
+  String get watchlistUpdated;
+
+  /// No description provided for @watchlistAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Watchlist added'**
+  String get watchlistAdded;
 
   /// No description provided for @searchBarPlaceholder.
   ///
@@ -121,6 +145,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Current Price'**
   String get currentPrice;
+
+  /// No description provided for @closingPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing Price'**
+  String get closingPrice;
 
   /// No description provided for @alertCondition.
   ///
@@ -163,6 +193,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add to Watchlist'**
   String get addToWatchlist;
+
+  /// No description provided for @update.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get update;
 }
 
 class _AppLocalizationsDelegate

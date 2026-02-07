@@ -12,13 +12,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markets => 'Markets';
 
   @override
+  String get watchlist => 'Watchlist';
+
+  @override
   String get noResultsFound => 'No results found';
+
+  @override
+  String get noWatchlist => 'No watchlist';
+
+  @override
+  String get watchlistUpdated => 'Watchlist updated';
+
+  @override
+  String get watchlistAdded => 'Watchlist added';
 
   @override
   String get searchBarPlaceholder => 'Search for stocks, ETFs, etc.';
 
   @override
   String get currentPrice => 'Current Price';
+
+  @override
+  String get closingPrice => 'Closing Price';
 
   @override
   String get alertCondition => 'Alert Condition';
@@ -40,4 +55,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addToWatchlist => 'Add to Watchlist';
+
+  @override
+  String get update => 'Update';
 }

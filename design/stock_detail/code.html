@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Core Stock Detail Page</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#197fe6",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0B0E11",
+                        "surface-dark": "#1B1F23",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .sticky-nav {
+            position: sticky;
+            top: 64px;
+            z-index: 40;
+        }
+        .ios-tab-bar {
+            backdrop-filter: blur(20px);
+            background-color: rgba(27, 31, 35, 0.8);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display">
+<!-- Pinned TopAppBar -->
+<header class="sticky top-0 z-50 flex items-center justify-between px-4 py-3 bg-background-light dark:bg-background-dark border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Samsung Electronics corporate logo icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCA1aHEDNqmh7xjtd8YRqWk_noTBQe4Sltb2pdEA-32UGgReeB0UlCN8pQZAExSok4vE6qizu_tSJtAntgGnoX_EJRQB2ZBeG8iX3F-UmAN0_v8DfljoA65yqsuwwvnd0gH9xVLHNH-XaFSVu0vTEwAGy-J545TgUvF9rnfy93AI7WFmGDl4k-Y0cVOveq178tHT9OhsY3QtWm9Uy203H_zGdrZNVMbEnUyGdOFKDfGbWDx6gSMXQbSA9lwCMVxqQwciX4vG7Wmlk"/>
+</div>
+<div>
+<h1 class="text-sm font-bold leading-tight">Samsung Electronics</h1>
+<p class="text-xs text-slate-500 dark:text-slate-400 font-medium">005930 · KOSPI</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-[24px]">search</span>
+</button>
+<button class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1">star</span>
+</button>
+</div>
+</header>
+<!-- Sticky Section Navigation Bar -->
+<nav class="sticky-nav bg-background-light dark:bg-background-dark border-b border-slate-200 dark:border-slate-800 overflow-x-auto hide-scrollbar">
+<div class="flex gap-2 px-4 py-3 min-w-max">
+<button class="px-4 py-1.5 rounded-full text-sm font-semibold bg-primary text-white">Price</button>
+<button class="px-4 py-1.5 rounded-full text-sm font-semibold bg-slate-200 dark:bg-surface-dark text-slate-600 dark:text-slate-300">Summary</button>
+<button class="px-4 py-1.5 rounded-full text-sm font-semibold bg-slate-200 dark:bg-surface-dark text-slate-600 dark:text-slate-300">Input</button>
+<button class="px-4 py-1.5 rounded-full text-sm font-semibold bg-slate-200 dark:bg-surface-dark text-slate-600 dark:text-slate-300">Details</button>
+<button class="px-4 py-1.5 rounded-full text-sm font-semibold bg-slate-200 dark:bg-surface-dark text-slate-600 dark:text-slate-300">Info 1</button>
+<button class="px-4 py-1.5 rounded-full text-sm font-semibold bg-slate-200 dark:bg-surface-dark text-slate-600 dark:text-slate-300">Info 2</button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="pb-24">
+<!-- Price Section -->
+<section class="px-4 pt-6 pb-8" id="price">
+<div class="flex flex-col gap-1">
+<span class="text-xs font-bold uppercase tracking-wider text-slate-500">Current Price</span>
+<div class="flex items-baseline gap-2">
+<h2 class="text-4xl font-bold tracking-tight">$72,500</h2>
+<span class="text-lg font-semibold text-slate-500">KRW</span>
+</div>
+<p class="text-emerald-500 font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                    +1.25% (+$900) Today
+                </p>
+</div>
+<!-- Mock Chart -->
+<div class="mt-8 h-[220px] w-full relative">
+<svg class="w-full h-full drop-shadow-xl" preserveaspectratio="none" viewbox="0 0 400 150">
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#197fe6" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#197fe6" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,120 Q50,110 80,130 T160,80 T240,100 T320,40 T400,60 L400,150 L0,150 Z" fill="url(#chartGradient)"></path>
+<path d="M0,120 Q50,110 80,130 T160,80 T240,100 T320,40 T400,60" fill="none" stroke="#197fe6" stroke-linecap="round" stroke-width="3"></path>
+<!-- Current Price Marker -->
+<circle cx="320" cy="40" fill="#197fe6" r="4"></circle>
+<circle cx="320" cy="40" fill="#197fe6" fill-opacity="0.2" r="8"></circle>
+</svg>
+<div class="flex justify-between mt-4 text-[10px] font-bold text-slate-500 px-1">
+<span>9 AM</span>
+<span>12 PM</span>
+<span>3 PM</span>
+<span>6 PM</span>
+</div>
+</div>
+</section>
+<!-- Divider -->
+<div class="h-2 bg-slate-100 dark:bg-black/40"></div>
+<!-- Summary Section -->
+<section class="px-4 py-8" id="summary">
+<h3 class="text-xl font-bold mb-4">Summary</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                Samsung Electronics Co., Ltd. is a global leader in technology, opening new possibilities for people everywhere. Through relentless innovation and discovery, they are transforming the worlds of TVs, smartphones, wearable devices, tablets, digital appliances, network systems, medical devices, semiconductors and LED solutions.
+            </p>
+</section>
+<!-- Divider -->
+<div class="h-2 bg-slate-100 dark:bg-black/40"></div>
+<!-- Input Section: Setting Alerts -->
+<section class="px-4 py-8" id="input">
+<h3 class="text-xl font-bold mb-4">Setting Alerts</h3>
+<div class="bg-white dark:bg-surface-dark rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="space-y-6">
+<div>
+<label class="block text-sm font-semibold text-slate-500 mb-2">Target Price (KRW)</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+<input class="w-full bg-slate-50 dark:bg-background-dark border-slate-200 dark:border-slate-800 rounded-lg py-3 pl-8 pr-4 text-lg font-bold focus:ring-2 focus:ring-primary focus:border-transparent outline-none" placeholder="75,000" type="number"/>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="font-bold">Push Notifications</p>
+<p class="text-xs text-slate-500">Alert me when price is reached</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+<button class="w-full bg-primary text-white font-bold py-3 rounded-lg shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
+                        Create Alert
+                    </button>
+</div>
+</div>
+</section>
+<!-- Expansion Panel Section -->
+<section class="px-4 py-8" id="details">
+<h3 class="text-xl font-bold mb-4">Details</h3>
+<div class="space-y-3">
+<!-- Panel 1 -->
+<div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white dark:bg-surface-dark">
+<button class="w-full flex items-center justify-between px-5 py-4 text-left">
+<span class="font-bold">Financial Performance</span>
+<span class="material-symbols-outlined text-slate-400">expand_more</span>
+</button>
+<!-- Expandable content (hidden by default in high-fidelity mock) -->
+</div>
+<!-- Panel 2 (Expanded Example) -->
+<div class="border border-primary/50 dark:border-primary/30 rounded-xl overflow-hidden bg-white dark:bg-surface-dark ring-1 ring-primary/20">
+<button class="w-full flex items-center justify-between px-5 py-4 text-left">
+<span class="font-bold text-primary">Recent News</span>
+<span class="material-symbols-outlined text-primary rotate-180">expand_more</span>
+</button>
+<div class="px-5 pb-5 space-y-4">
+<div class="flex gap-4">
+<div class="size-16 rounded-lg bg-slate-100 dark:bg-background-dark shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover opacity-50" data-alt="Stock market news article thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDejyXYVFP9g4S0i_YF7RDFSPWusuKdDitJJ55_AFBSoS1tUFIapbRnFxiXDZEJ8QDdjdEgR6LKlurjSmc7gSC81aWBr3uNDZUpByQhwb32zBghRG7DRPBW7VGASKVaJliOecX7LDinajRsHrr3jyn7jKr0Ba9A9VadA04l7uM3_CM2fBbsq3cH9qvsP3W9HkcJE9HI2q440zr0IwTnNiXcoCNi7qwl3ssfZpRA1MosQx_Ew6j3l2iH6HME-xnJAI_JLBa7JmB48yI"/>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold line-clamp-2">Samsung announces Q3 profit jump amid AI chip demand</p>
+<p class="text-xs text-slate-500 mt-1">2 hours ago · Reuters</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Panel 3 -->
+<div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white dark:bg-surface-dark">
+<button class="w-full flex items-center justify-between px-5 py-4 text-left">
+<span class="font-bold">Dividends</span>
+<span class="material-symbols-outlined text-slate-400">expand_more</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Dummy Sections for Scroll Depth -->
+<section class="px-4 py-8" id="info1">
+<h3 class="text-xl font-bold mb-4">Info 1: Analyst Ratings</h3>
+<div class="grid grid-cols-3 gap-4">
+<div class="bg-white dark:bg-surface-dark p-4 rounded-xl text-center border border-slate-200 dark:border-slate-800">
+<p class="text-2xl font-bold text-emerald-500">24</p>
+<p class="text-[10px] font-bold text-slate-500 uppercase">Buy</p>
+</div>
+<div class="bg-white dark:bg-surface-dark p-4 rounded-xl text-center border border-slate-200 dark:border-slate-800">
+<p class="text-2xl font-bold text-slate-400">8</p>
+<p class="text-[10px] font-bold text-slate-500 uppercase">Hold</p>
+</div>
+<div class="bg-white dark:bg-surface-dark p-4 rounded-xl text-center border border-slate-200 dark:border-slate-800">
+<p class="text-2xl font-bold text-rose-500">2</p>
+<p class="text-[10px] font-bold text-slate-500 uppercase">Sell</p>
+</div>
+</div>
+<p class="mt-4 text-sm text-slate-500">Average analyst price target: $84,200 KRW</p>
+</section>
+<section class="px-4 py-8 mb-12" id="info2">
+<h3 class="text-xl font-bold mb-4">Info 2: Market Sentiment</h3>
+<div class="space-y-4">
+<div class="h-4 w-full bg-slate-200 dark:bg-surface-dark rounded-full overflow-hidden flex">
+<div class="h-full bg-emerald-500" style="width: 70%"></div>
+<div class="h-full bg-rose-500" style="width: 30%"></div>
+</div>
+<div class="flex justify-between text-xs font-bold">
+<span class="text-emerald-500">BULLISH 70%</span>
+<span class="text-rose-500">BEARISH 30%</span>
+</div>
+<p class="text-sm text-slate-500 italic leading-relaxed">
+                    Based on social media mentions, trading volume peaks, and institutional flows over the last 24 hours. Sentiment remains positive following the earnings preview.
+                </p>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar (iOS style) -->
+<div class="fixed bottom-0 left-0 right-0 ios-tab-bar border-t border-slate-200 dark:border-slate-800 px-6 pb-6 pt-3 flex justify-between items-center z-50">
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined text-[28px]">home</span>
+<span class="text-[10px] font-bold">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1">pie_chart</span>
+<span class="text-[10px] font-bold">Portfolio</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined text-[28px]">show_chart</span>
+<span class="text-[10px] font-bold">Market</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined text-[28px]">person</span>
+<span class="text-[10px] font-bold">Profile</span>
+</button>
+</div>
+</body></html>

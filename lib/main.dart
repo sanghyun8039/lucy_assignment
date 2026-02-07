@@ -11,6 +11,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:lucy_assignment/src/feature/watchlist/presentation/providers/watchlist_provider.dart';
 import 'package:lucy_assignment/src/l10n/app_localizations.dart';
+import 'package:lucy_assignment/src/core/utils/global_alert_listener.dart'; // Import global listener
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,10 +65,14 @@ class MyApp extends StatelessWidget {
         ],
         builder: (context, child) {
           final MediaQueryData data = MediaQuery.of(context);
-          return MediaQuery(
-            // making sure the text scale not affected by system font size
-            data: data.copyWith(textScaler: const TextScaler.linear(1.0)),
-            child: child ?? const SizedBox(),
+          return GlobalAlertListener(
+            navigatorKey: rootNavigatorKey,
+            // Wrap with global listener
+            child: MediaQuery(
+              // making sure the text scale not affected by system font size
+              data: data.copyWith(textScaler: const TextScaler.linear(1.0)),
+              child: child ?? const SizedBox(),
+            ),
           );
         },
       ),

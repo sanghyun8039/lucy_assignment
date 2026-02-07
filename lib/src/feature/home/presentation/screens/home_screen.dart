@@ -57,18 +57,18 @@ class _HomeScreenState extends State<HomeScreen> {
             ? AppColors.backgroundLight
             : AppColors.backgroundDark,
         elevation: 0,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: CircleAvatar(
-              backgroundColor: context.theme.brightness == Brightness.light
-                  ? AppColors.backgroundLight
-                  : AppColors.surfaceDark,
-              radius: 16,
-              // Placeholder for profile image
-            ),
-          ),
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(right: 16),
+        //     child: CircleAvatar(
+        //       backgroundColor: context.theme.brightness == Brightness.light
+        //           ? AppColors.backgroundLight
+        //           : AppColors.surfaceDark,
+        //       radius: 16,
+        //       // Placeholder for profile image
+        //     ),
+        //   ),
+        // ],
       ),
       body: Column(
         children: [

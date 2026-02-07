@@ -6,15 +6,15 @@ import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 
 class PriceInfoCard extends StatelessWidget {
-  final StockEntity stock;
+  final StockEntity? stock;
   const PriceInfoCard({super.key, required this.stock});
 
   @override
   Widget build(BuildContext context) {
     final currencyFormat = NumberFormat("#,###");
 
-    final isRising = stock.changeRate > 0;
-    final isFalling = stock.changeRate < 0;
+    final isRising = (stock?.changeRate ?? 0) > 0;
+    final isFalling = (stock?.changeRate ?? 0) < 0;
     final Color priceColor = isRising
         ? AppColors.growth2
         : (isFalling
@@ -41,7 +41,7 @@ class PriceInfoCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            context.s.currentPrice,
+            context.s.closingPrice,
             style: AppTypography.bodyMedium.copyWith(
               color: AppColors.textSecondary,
               fontWeight: FontWeight.w500,
@@ -53,7 +53,7 @@ class PriceInfoCard extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    '${currencyFormat.format(stock.currentPrice)} 원',
+                    '${currencyFormat.format(stock?.currentPrice ?? 0)} 원',
                     style: AppTypography.titleLarge.copyWith(
                       fontWeight: FontWeight.bold,
                       color: priceColor,

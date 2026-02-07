@@ -31,6 +31,7 @@ class TargetPriceInput extends StatelessWidget {
             keyboardType: TextInputType.numberWithOptions(decimal: true),
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
+              MaxValueInputFormatter(),
               PriceInputFormatter(),
             ],
             style: AppTypography.titleLarge.copyWith(
@@ -72,5 +73,28 @@ class TargetPriceInput extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class MaxValueInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (newValue.text.isEmpty) return newValue;
+
+    // 숫자만 추출
+    final newText = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+
+    // 비어있으면 허용 (삭제 시)
+    if (newText.isEmpty) return newValue;
+
+    // int 범위 체크 (tryParse가 실패하면 오버플로우)
+    if (int.tryParse(newText) == null) {
+      return oldValue;
+    }
+
+    return newValue;
   }
 }

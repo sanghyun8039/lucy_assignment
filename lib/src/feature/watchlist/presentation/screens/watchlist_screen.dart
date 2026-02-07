@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lucy_assignment/src/core/design_system/design_system.dart';
 import 'package:lucy_assignment/src/core/di/service_locator.dart';
+import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/usecases/get_stock_usecase.dart';
 import 'package:provider/provider.dart';
@@ -13,15 +15,32 @@ class WatchlistScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          context.s.watchlist,
+          style: AppTypography.displayMedium.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: context.theme.brightness == Brightness.light
+            ? AppColors.backgroundLight
+            : AppColors.backgroundDark,
+        elevation: 0,
+      ),
       body: Consumer<WatchlistProvider>(
         builder: (context, provider, child) {
           final watchlist = provider.watchlist;
 
           if (watchlist.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
-                '관심 종목을 추가해주세요.',
-                style: TextStyle(color: Colors.white),
+                context.s.noWatchlist,
+                style: AppTypography.bodyLarge.copyWith(
+                  color: context.theme.brightness == Brightness.light
+                      ? AppColors.textPrimaryLight
+                      : AppColors.textPrimaryDark,
+                ),
               ),
             );
           }
@@ -36,7 +55,10 @@ class WatchlistScreen extends StatelessWidget {
                 future: sl<GetStockUseCase>().call(item.stockCode),
                 builder: (context, snapshot) {
                   if (snapshot.hasData && snapshot.data != null) {
-                    return WatchlistTile(item: snapshot.data!);
+                    return WatchlistTile(
+                      item: item,
+                      stockEntity: snapshot.data,
+                    );
                   }
                   return const SizedBox.shrink();
                 },
