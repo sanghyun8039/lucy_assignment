@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:lucy_assignment/src/feature/stock/data/datasources/stock_local_datasource.dart';
 import 'package:lucy_assignment/src/feature/stock/data/models/stock_model.dart';
@@ -16,52 +17,81 @@ class MockStockRemoteDataSource implements StockRemoteDataSource {
   final StockLocalDataSource _localDataSource;
   final StockSocketManager _socketManager;
 
-  // 감시 대상 종목 코드를 관리하는 Subject
+  // 감시 대상 종목 관리
   final BehaviorSubject<List<String>> _watchedStocksSubject =
       BehaviorSubject.seeded([]);
 
-  // 현재 구독 중인 종목 관리 (중복 구독 방지)
-  final Set<String> _currentSubscriptions = {};
+  // 현재 소켓에 실제 구독 요청된 종목들 (중복 호출 방지용)
+  final Set<String> _activeSocketSubscriptions = {};
 
-  // 전체 주식 리스트 캐시
+  // 캐시 데이터 (메모리)
   List<StockModel> _allStocksCache = [];
+  bool _isInitialized = false;
 
   MockStockRemoteDataSource({
     required StockLocalDataSource localDataSource,
     required StockSocketManager socketManager,
   }) : _localDataSource = localDataSource,
        _socketManager = socketManager {
+    _init();
+  }
+
+  void _init() async {
     _socketManager.connect();
 
-    // 소켓 연결 및 구독 상태 관리
+    // 1. 로컬 데이터 미리 로드 (캐싱)
+    try {
+      _allStocksCache = await _localDataSource.getStocks();
+      _isInitialized = true;
+
+      // 2. 데이터 로드 후, 혹시 대기 중인 구독 요청이 있다면 처리
+      _syncSubscriptions(_watchedStocksSubject.value);
+    } catch (e) {
+      debugPrint('Error loading initial stocks: $e');
+    }
+
+    // 3. 이후 감시 목록 변경 시마다 동기화 수행
     _watchedStocksSubject.distinct().listen((watchedCodes) {
-      _syncSubscriptions(watchedCodes);
+      if (_isInitialized) {
+        _syncSubscriptions(watchedCodes);
+      }
     });
   }
 
   void _syncSubscriptions(List<String> desiredCodes) {
-    if (_allStocksCache.isEmpty) return; // 캐시가 없으면 아직 구독 불가
+    if (!_isInitialized) return;
 
     final desiredSet = desiredCodes.toSet();
-    final toSubscribe = desiredSet.difference(_currentSubscriptions);
-    final toUnsubscribe = _currentSubscriptions.difference(desiredSet);
 
-    // 구독 해지
+    // 제거해야 할 것들 (현재 구독 중 - 원하는 목록)
+    final toUnsubscribe = _activeSocketSubscriptions.difference(desiredSet);
     for (var code in toUnsubscribe) {
       _socketManager.unsubscribeFromStock(code);
-      _currentSubscriptions.remove(code);
+      _activeSocketSubscriptions.remove(code);
     }
 
-    // 신규 구독
+    // 추가해야 할 것들 (원하는 목록 - 현재 구독 중)
+    final toSubscribe = desiredSet.difference(_activeSocketSubscriptions);
     for (var code in toSubscribe) {
-      final stockIndex = _allStocksCache.indexWhere((s) => s.stockCode == code);
-      if (stockIndex != -1) {
-        final stock = _allStocksCache[stockIndex];
+      // 캐시에서 현재가 찾기
+      final stock = _allStocksCache.firstWhere(
+        (s) => s.stockCode == code,
+        orElse: () => StockModel(
+          stockCode: '',
+          stockName: '',
+          currentPrice: 0,
+          changeRate: 0,
+          timestamp: DateTime.now(),
+          type: 'unknown',
+        ),
+      );
+
+      if (stock.stockCode.isNotEmpty) {
         _socketManager.subscribeToStock(
           stock.stockCode,
           stock.currentPrice.toDouble(),
         );
-        _currentSubscriptions.add(code);
+        _activeSocketSubscriptions.add(code);
       }
     }
   }
@@ -73,35 +103,19 @@ class MockStockRemoteDataSource implements StockRemoteDataSource {
 
   @override
   Stream<StockEntity> getPriceStream() {
-    // 1. 초기 데이터 로딩 (Stream 생성 시점)
-    return Stream.fromFuture(_localDataSource.getStocks()).switchMap((stocks) {
-      _allStocksCache = stocks;
-
-      // 초기 로딩 시 이미 감시 종목이 있다면 구독 수행
-      // 초기 로딩 시 키시된 감시 종목 구독 동기화
-      _syncSubscriptions(_watchedStocksSubject.value);
-
-      // 2. 소켓 메시지 스트림을 StockEntity 스트림으로 변환
-      return _socketManager.messageStream
-          .map((message) {
-            if (message is StockSocketMessagePriceUpdate) {
-              return StockEntity(
-                type: message.type,
-                stockCode: message.stockCode,
-                currentPrice: message.currentPrice.toInt(),
-                changeRate: message.changeRate,
-                timestamp: message.timestamp,
-              );
-            }
-            return StockEntity(
-              stockCode: '',
-              currentPrice: 0,
-              changeRate: 0,
-              type: 'unknown',
-              timestamp: DateTime.now(),
-            );
-          })
-          .where((entity) => entity.type != 'unknown');
-    });
+    // ✅ 수정됨: 불필요한 객체 생성 제거 및 타입 안전성 확보
+    return _socketManager.messageStream
+        // 1. 타입 필터링을 먼저 수행 (GC 부하 감소)
+        .whereType<StockSocketMessagePriceUpdate>()
+        // 2. 필요한 데이터만 변환
+        .map((message) {
+          return StockEntity(
+            type: message.type,
+            stockCode: message.stockCode,
+            currentPrice: message.currentPrice.toInt(),
+            changeRate: message.changeRate,
+            timestamp: message.timestamp,
+          );
+        });
   }
 }

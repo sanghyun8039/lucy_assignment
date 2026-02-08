@@ -66,7 +66,7 @@ class AppRoute {
         ],
       ),
       GoRoute(
-        path: '/stock_detail',
+        path: '/stock_detail/:stockCode',
         name: AppRouteName.stockDetail,
         builder: (context, state) => ChangeNotifierProvider(
           create: (_) => ScrollSyncProvider(),

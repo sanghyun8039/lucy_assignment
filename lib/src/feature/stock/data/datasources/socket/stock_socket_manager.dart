@@ -23,6 +23,7 @@ class StockSocketManager {
       timer?.cancel();
     }
     _timers.clear();
+    _subscriberCount.clear(); // ✅ 추가: 카운트도 초기화
     _messageSubject.close();
   }
 

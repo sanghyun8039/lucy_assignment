@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/key_stats_section.dart';
 import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/market_position_section.dart';
 import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/summary_section.dart';
+import 'package:lucy_assignment/src/feature/watchlist/presentation/providers/watchlist_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:lucy_assignment/src/core/di/service_locator.dart';
@@ -43,16 +44,23 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final extra = GoRouterState.of(context).extra;
-    final newStock = extra is StockEntity
-        ? extra
-        : StockEntity(
-            stockCode: "-",
-            stockName: "-",
-            currentPrice: 0,
-            changeRate: 0,
-            timestamp: DateTime.now(),
-          );
+    final stockCode =
+        GoRouterState.of(context).pathParameters['stockCode'] ?? '-';
+
+    // Try to get from provider (cached)
+    // Note: We use context.read because we don't want to rebuild the whole screen on every minor update
+    // just for the initial setup. The specific sections listen to streams.
+    final cachedStock = context.read<WatchlistProvider>().getPrice(stockCode);
+
+    final newStock =
+        cachedStock ??
+        StockEntity(
+          stockCode: stockCode,
+          stockName: stockCode, // Temporary name until loaded
+          currentPrice: 0,
+          changeRate: 0,
+          timestamp: DateTime.now(),
+        );
 
     _stock = newStock;
 

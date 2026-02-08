@@ -46,6 +46,7 @@ class MyApp extends StatelessWidget {
             addWatchlistItemUseCase: sl(),
             removeWatchlistItemUseCase: sl(),
             getPriceStreamUseCase: sl(),
+            getStockUseCase: sl(),
           ),
         ),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),

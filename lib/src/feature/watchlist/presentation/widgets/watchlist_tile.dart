@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucy_assignment/src/core/constants/alert_type.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_item.dart';
+import 'package:lucy_assignment/src/feature/watchlist/presentation/widgets/stock_price_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:lucy_assignment/src/core/design_system/colors.dart';
 import 'package:lucy_assignment/src/core/design_system/typography.dart';
@@ -19,46 +20,50 @@ import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart
 class WatchlistTile extends StatelessWidget {
   final WatchlistItem item;
   final StockEntity? stockEntity;
+  final bool showDivider;
 
   const WatchlistTile({
     super.key,
     required this.item,
     required this.stockEntity,
+    this.showDivider = true,
   });
-  @override
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        final realtimeStock = context.read<WatchlistProvider>().getPrice(
-          item.stockCode,
-        );
-        final stock =
-            stockEntity?.copyWith(
-              currentPrice:
-                  realtimeStock?.currentPrice ?? stockEntity?.currentPrice ?? 0,
-              changeRate:
-                  realtimeStock?.changeRate ?? stockEntity?.changeRate ?? 0.0,
-            ) ??
-            realtimeStock;
-
         context.pushNamed(
           AppRouteName.stockDetail,
-          extra: stock ?? stockEntity,
+          pathParameters: {'stockCode': item.stockCode},
         );
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        color: context.theme.brightness == Brightness.light
-            ? AppColors.backgroundLight
-            : AppColors.backgroundDark,
+        decoration: BoxDecoration(
+          color: context.theme.brightness == Brightness.light
+              ? AppColors.backgroundLight
+              : AppColors.backgroundDark,
+          // ✅ [핵심] Separator 대신 Border를 사용
+          border: showDivider
+              ? const Border(
+                  bottom: BorderSide(color: AppColors.borderLight, width: 1.0),
+                )
+              : null,
+        ),
         child: Row(
           children: [
             _buildLogo(context),
             const SizedBox(width: 16),
             Expanded(child: _buildStockInfo(context)),
             const SizedBox(width: 16),
-            _buildPriceInfo(context),
+            // ✅ 수정됨: 독립 위젯 + RepaintBoundary 적용
+            RepaintBoundary(
+              child: StockPriceWidget(
+                stockCode: item.stockCode,
+                initialStock: stockEntity,
+              ),
+            ),
             _buildEditButton(context),
           ],
         ),
@@ -128,9 +133,13 @@ class WatchlistTile extends StatelessWidget {
   }
 
   Widget _buildPriceInfo(BuildContext context) {
-    return Selector<WatchlistProvider, StockEntity?>(
-      selector: (context, provider) => provider.getPrice(item.stockCode),
-      builder: (context, realtimeStock, child) {
+    return StreamBuilder<StockEntity>(
+      stream: context.read<WatchlistProvider>().priceStream.where(
+        (stock) => stock.stockCode == item.stockCode,
+      ),
+      initialData: stockEntity,
+      builder: (context, snapshot) {
+        final realtimeStock = snapshot.data;
         final stock =
             stockEntity?.copyWith(
               currentPrice:

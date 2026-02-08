@@ -8,6 +8,8 @@ import 'package:lucy_assignment/src/feature/watchlist/domain/usecases/get_watch_
 import 'package:lucy_assignment/src/feature/watchlist/domain/usecases/remove_watchlist_item_usecase.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/usecases/get_price_stream_usecase.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
+import 'package:lucy_assignment/src/feature/stock/domain/usecases/get_stock_usecase.dart';
+import 'package:rxdart/rxdart.dart';
 
 class AlertEvent {
   final String message;
@@ -20,8 +22,8 @@ class WatchlistProvider extends ChangeNotifier {
   final GetWatchStreamUseCase _getWatchStreamUseCase;
   final AddWatchlistItemUseCase _addWatchlistItemUseCase;
   final RemoveWatchlistItemUseCase _removeWatchlistItemUseCase;
-
   final GetPriceStreamUseCase _getPriceStreamUseCase;
+  final GetStockUseCase _getStockUseCase;
 
   StreamSubscription<List<WatchlistItem>>? _watchlistSubscription;
   StreamSubscription<StockEntity>? _priceSubscription;
@@ -34,33 +36,96 @@ class WatchlistProvider extends ChangeNotifier {
   final Set<String> _alertedConditions = {};
 
   final Map<String, StockEntity> _priceMap = {};
+  final Map<String, StreamController<StockEntity>> _stockControllers = {};
 
+  // Broadcast stream for price updates
+  final _priceStreamController = StreamController<StockEntity>.broadcast();
+  Stream<StockEntity> get priceStream => _priceStreamController.stream;
   WatchlistProvider({
     required GetWatchStreamUseCase getWatchStreamUseCase,
     required AddWatchlistItemUseCase addWatchlistItemUseCase,
     required RemoveWatchlistItemUseCase removeWatchlistItemUseCase,
     required GetPriceStreamUseCase getPriceStreamUseCase,
+    required GetStockUseCase getStockUseCase,
   }) : _getWatchStreamUseCase = getWatchStreamUseCase,
        _addWatchlistItemUseCase = addWatchlistItemUseCase,
        _removeWatchlistItemUseCase = removeWatchlistItemUseCase,
-       _getPriceStreamUseCase = getPriceStreamUseCase {
+       _getPriceStreamUseCase = getPriceStreamUseCase,
+       _getStockUseCase = getStockUseCase {
     _init();
   }
 
   void _init() {
-    _watchlistSubscription = _getWatchStreamUseCase().listen((watchlist) {
+    _watchlistSubscription = _getWatchStreamUseCase().listen((watchlist) async {
       _watchlist = watchlist;
       _watchedStockCodes.clear();
       _watchedStockCodes.addAll(watchlist.map((item) => item.stockCode));
 
+      // Fetch initial data for items not in priceMap
+      for (var item in watchlist) {
+        if (!_priceMap.containsKey(item.stockCode)) {
+          final stock = await _getStockUseCase(item.stockCode);
+          if (stock != null) {
+            _priceMap[item.stockCode] = stock;
+          }
+        }
+      }
+
       notifyListeners();
     });
 
-    _priceSubscription = _getPriceStreamUseCase().listen((stock) {
-      _priceMap[stock.stockCode] = stock;
-      _checkAlerts(stock);
-      notifyListeners();
+    _priceSubscription = _getPriceStreamUseCase().listen((priceUpdate) {
+      final existingStock = _priceMap[priceUpdate.stockCode];
+
+      final StockEntity mergedStock;
+      if (existingStock != null) {
+        // Merge dynamic data into existing static data
+        mergedStock = existingStock.copyWith(
+          currentPrice: priceUpdate.currentPrice,
+          changeRate: priceUpdate.changeRate,
+          timestamp: priceUpdate.timestamp,
+        );
+      } else {
+        mergedStock = priceUpdate;
+      }
+
+      _priceMap[mergedStock.stockCode] = mergedStock;
+      _checkAlerts(mergedStock);
+      // ✅ 변경 2: 전체 방송 대신, 해당 종목을 듣고 있는 컨트롤러에만 쏙 넣어줍니다.
+      // 리스너가 없는 종목의 업데이트는 무시되어 성능이 절약됩니다.
+      if (_stockControllers.containsKey(mergedStock.stockCode)) {
+        _stockControllers[mergedStock.stockCode]!.add(mergedStock);
+      }
     });
+  }
+
+  Stream<StockEntity> getStockStream(String stockCode) {
+    if (_stockControllers.containsKey(stockCode)) {
+      // 0.5초(500ms) 간격으로 샘플링하여 UI 리빌드 횟수를 강제로 낮춤
+      return _stockControllers[stockCode]!.stream.throttleTime(
+        const Duration(milliseconds: 500),
+        trailing: true, // 마지막 값은 반드시 방출
+        leading: false,
+      );
+    }
+
+    // 컨트롤러 생성 (Lazy Creation)
+    final controller = StreamController<StockEntity>.broadcast();
+    _stockControllers[stockCode] = controller;
+
+    // 초기값 전달
+    if (_priceMap.containsKey(stockCode)) {
+      Future.microtask(() {
+        if (!controller.isClosed) controller.add(_priceMap[stockCode]!);
+      });
+    }
+
+    // ✅ 여기서도 throttleTime 적용
+    return controller.stream.throttleTime(
+      const Duration(milliseconds: 500),
+      trailing: true,
+      leading: false,
+    );
   }
 
   void _checkAlerts(StockEntity stock) {
@@ -121,9 +186,14 @@ class WatchlistProvider extends ChangeNotifier {
 
   @override
   void dispose() {
+    for (var controller in _stockControllers.values) {
+      controller.close();
+    }
+    _stockControllers.clear();
     _watchlistSubscription?.cancel();
     _priceSubscription?.cancel();
     _alertController.close();
+    //_priceStreamController.close();
     super.dispose();
   }
 
