@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +10,6 @@ import 'package:lucy_assignment/src/feature/home/presentation/components/markets
 import 'package:lucy_assignment/src/feature/home/presentation/components/markets_bottom_sheet/header.dart';
 import 'package:lucy_assignment/src/feature/home/presentation/components/markets_bottom_sheet/price_info_card.dart';
 import 'package:lucy_assignment/src/feature/home/presentation/components/markets_bottom_sheet/target_price_input.dart';
-import 'package:lucy_assignment/src/feature/logo/domain/usecases/get_logo_file_usecase.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_item.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 
@@ -37,7 +34,7 @@ class _MarketsBottomSheetState extends State<MarketsBottomSheet> {
     _targetPriceController = TextEditingController(
       text: initialPrice != null
           ? NumberFormat("#,###").format(initialPrice)
-          : '-',
+          : '',
     );
     _selectedType = widget.existingItem?.alertType ?? AlertType.upper;
   }
@@ -74,7 +71,6 @@ class _MarketsBottomSheetState extends State<MarketsBottomSheet> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Drag Handle
               Center(
                 child: Container(
                   margin: const EdgeInsets.symmetric(vertical: 12),
@@ -142,8 +138,8 @@ class _MarketsBottomSheetState extends State<MarketsBottomSheet> {
                           SnackBar(
                             content: Text(
                               isEditMode
-                                  ? context.s.watchlistUpdated
-                                  : context.s.watchlistAdded,
+                                  ? context.l10n.watchlistUpdated
+                                  : context.l10n.watchlistAdded,
                             ),
                           ),
                         );
@@ -161,7 +157,9 @@ class _MarketsBottomSheetState extends State<MarketsBottomSheet> {
                       shadowColor: AppColors.primary.withValues(alpha: 0.2),
                     ),
                     child: Text(
-                      isEditMode ? context.s.update : context.s.addToWatchlist,
+                      isEditMode
+                          ? context.l10n.update
+                          : context.l10n.addToWatchlist,
                       style: AppTypography.titleMedium.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,

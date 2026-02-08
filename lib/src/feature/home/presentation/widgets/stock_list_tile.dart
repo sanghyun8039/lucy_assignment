@@ -7,7 +7,6 @@ import 'package:lucy_assignment/src/core/di/service_locator.dart';
 import 'package:lucy_assignment/src/feature/home/presentation/widgets/markets_bottom_sheet.dart';
 import 'package:lucy_assignment/src/feature/logo/domain/usecases/get_logo_file_usecase.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
-import 'package:intl/intl.dart';
 
 import 'package:provider/provider.dart';
 import 'package:lucy_assignment/src/feature/watchlist/presentation/providers/watchlist_provider.dart';

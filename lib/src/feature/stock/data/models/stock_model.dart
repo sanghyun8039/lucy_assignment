@@ -16,6 +16,17 @@ abstract class StockModel with _$StockModel {
     required int currentPrice,
     @JsonKey(name: 'prdy_ctrt', fromJson: Parsers.parseRate)
     required double changeRate,
+    @JsonKey(name: 'data_rank', fromJson: Parsers.parseStringToInt)
+    required int rank,
+    @Default("No summary available") String summary,
+    @JsonKey(name: 'acml_vol', fromJson: Parsers.parseStringToInt)
+    required int accumulatedVolume,
+    @JsonKey(name: 'stck_avls', fromJson: Parsers.parseStringToInt)
+    required int marketCap,
+    @JsonKey(name: 'lstn_stcn', fromJson: Parsers.parseStringToInt)
+    required int listedShares,
+    @JsonKey(name: 'mrkt_whol_avls_rlim', fromJson: Parsers.parseStringToDouble)
+    required double marketWeight,
     @Default(null) DateTime? timestamp, // JSON에 없으므로 Default 또는 수동 주입
   }) = _StockModel;
 
@@ -29,6 +40,12 @@ abstract class StockModel with _$StockModel {
       stockName: stockName,
       currentPrice: currentPrice,
       changeRate: changeRate,
+      rank: rank,
+      summary: summary,
+      accumulatedVolume: accumulatedVolume,
+      marketCap: marketCap,
+      listedShares: listedShares,
+      marketWeight: marketWeight,
       timestamp: timestamp,
     );
   }

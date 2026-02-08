@@ -5,9 +5,9 @@ import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/usecases/get_stock_usecase.dart';
 import 'package:provider/provider.dart';
-import 'package:lucy_assignment/src/core/design_system/colors.dart';
 import 'package:lucy_assignment/src/feature/watchlist/presentation/providers/watchlist_provider.dart';
 import 'package:lucy_assignment/src/feature/watchlist/presentation/widgets/watchlist_tile.dart';
+import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_item.dart';
 
 class WatchlistScreen extends StatelessWidget {
   const WatchlistScreen({super.key});
@@ -17,7 +17,7 @@ class WatchlistScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          context.s.watchlist,
+          context.l10n.watchlist,
           style: AppTypography.displayMedium.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -28,14 +28,13 @@ class WatchlistScreen extends StatelessWidget {
             : AppColors.backgroundDark,
         elevation: 0,
       ),
-      body: Consumer<WatchlistProvider>(
-        builder: (context, provider, child) {
-          final watchlist = provider.watchlist;
-
+      body: Selector<WatchlistProvider, List<WatchlistItem>>(
+        selector: (context, provider) => provider.watchlist,
+        builder: (context, watchlist, child) {
           if (watchlist.isEmpty) {
             return Center(
               child: Text(
-                context.s.noWatchlist,
+                context.l10n.noWatchlist,
                 style: AppTypography.bodyLarge.copyWith(
                   color: context.theme.brightness == Brightness.light
                       ? AppColors.textPrimaryLight
@@ -54,13 +53,7 @@ class WatchlistScreen extends StatelessWidget {
               return FutureBuilder<StockEntity?>(
                 future: sl<GetStockUseCase>().call(item.stockCode),
                 builder: (context, snapshot) {
-                  if (snapshot.hasData && snapshot.data != null) {
-                    return WatchlistTile(
-                      item: item,
-                      stockEntity: snapshot.data,
-                    );
-                  }
-                  return const SizedBox.shrink();
+                  return WatchlistTile(item: item, stockEntity: snapshot.data);
                 },
               );
             },

@@ -98,17 +98,29 @@ abstract class AppLocalizations {
     Locale('ko'),
   ];
 
-  /// No description provided for @markets.
+  /// No description provided for @home.
   ///
   /// In en, this message translates to:
-  /// **'Markets'**
-  String get markets;
+  /// **'Home'**
+  String get home;
 
   /// No description provided for @watchlist.
   ///
   /// In en, this message translates to:
   /// **'Watchlist'**
   String get watchlist;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @markets.
+  ///
+  /// In en, this message translates to:
+  /// **'Markets'**
+  String get markets;
 
   /// No description provided for @noResultsFound.
   ///
@@ -199,6 +211,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update'**
   String get update;
+
+  /// No description provided for @price.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get price;
+
+  /// No description provided for @summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get summary;
+
+  /// No description provided for @input.
+  ///
+  /// In en, this message translates to:
+  /// **'Input'**
+  String get input;
+
+  /// No description provided for @details.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get details;
+
+  /// No description provided for @marketPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Market Position'**
+  String get marketPosition;
+
+  /// No description provided for @investmentIndicators.
+  ///
+  /// In en, this message translates to:
+  /// **'Investment Indicators'**
+  String get investmentIndicators;
+
+  /// No description provided for @volume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get volume;
+
+  /// No description provided for @marketCap.
+  ///
+  /// In en, this message translates to:
+  /// **'Market Cap'**
+  String get marketCap;
+
+  /// No description provided for @listedShares.
+  ///
+  /// In en, this message translates to:
+  /// **'Listed Shares'**
+  String get listedShares;
+
+  /// No description provided for @marketWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Market Weight'**
+  String get marketWeight;
+
+  /// No description provided for @kospiMarketCap.
+  ///
+  /// In en, this message translates to:
+  /// **'KOSPI Market Cap'**
+  String get kospiMarketCap;
+
+  /// No description provided for @enterMemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter memo'**
+  String get enterMemo;
+
+  /// No description provided for @memo.
+  ///
+  /// In en, this message translates to:
+  /// **'Memo'**
+  String get memo;
+
+  /// No description provided for @createMemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Memo'**
+  String get createMemo;
+
+  /// No description provided for @theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
+
+  /// No description provided for @themeMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme Mode'**
+  String get themeMode;
+
+  /// No description provided for @light.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get light;
+
+  /// No description provided for @dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get dark;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// No description provided for @korean.
+  ///
+  /// In en, this message translates to:
+  /// **'Korean'**
+  String get korean;
+
+  /// No description provided for @localization.
+  ///
+  /// In en, this message translates to:
+  /// **'Localization'**
+  String get localization;
+
+  /// No description provided for @lang_default.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get lang_default;
 }
 
 class _AppLocalizationsDelegate

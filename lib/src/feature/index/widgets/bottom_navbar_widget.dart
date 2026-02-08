@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gap/gap.dart';
 import 'package:lucy_assignment/src/core/design_system/colors.dart';
 
 class BottomNavbarWidget extends StatelessWidget {
@@ -76,11 +78,11 @@ class BottomNavbarWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               SizedBox(
-                height: 24,
-                width: 24,
+                height: 24.h,
+                width: 24.w,
                 child: isSelected ? item.activeIcon : item.icon,
               ),
-              const SizedBox(height: 6),
+              Gap(6),
               Text(
                 item.label ?? "",
                 style: isSelected

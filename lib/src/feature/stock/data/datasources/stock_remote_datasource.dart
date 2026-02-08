@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:lucy_assignment/src/feature/watchlist/data/models/watchlist_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:lucy_assignment/src/feature/stock/data/datasources/stock_local_datasource.dart';
 import 'package:lucy_assignment/src/feature/stock/data/models/stock_model.dart';
@@ -21,6 +20,9 @@ class MockStockRemoteDataSource implements StockRemoteDataSource {
   final BehaviorSubject<List<String>> _watchedStocksSubject =
       BehaviorSubject.seeded([]);
 
+  // 현재 구독 중인 종목 관리 (중복 구독 방지)
+  final Set<String> _currentSubscriptions = {};
+
   // 전체 주식 리스트 캐시
   List<StockModel> _allStocksCache = [];
 
@@ -33,26 +35,35 @@ class MockStockRemoteDataSource implements StockRemoteDataSource {
 
     // 소켓 연결 및 구독 상태 관리
     _watchedStocksSubject.distinct().listen((watchedCodes) {
-      // 기존 구독 취소 로직이 필요하다면 추가 (여기서는 단순 추가만 예시)
-      // 실제로는 이전 목록과 비교해서 차이만큼만 구독/해지 하는게 좋음
-      for (var code in watchedCodes) {
-        final stock = _allStocksCache.firstWhere(
-          (s) => s.stockCode == code,
-          orElse: () => StockModel(
-            stockCode: '',
-            currentPrice: 0,
-            changeRate: 0,
-            type: '',
-          ),
-        );
-        if (stock.stockCode.isNotEmpty) {
-          _socketManager.subscribeToStock(
-            stock.stockCode,
-            stock.currentPrice.toDouble(),
-          );
-        }
-      }
+      _syncSubscriptions(watchedCodes);
     });
+  }
+
+  void _syncSubscriptions(List<String> desiredCodes) {
+    if (_allStocksCache.isEmpty) return; // 캐시가 없으면 아직 구독 불가
+
+    final desiredSet = desiredCodes.toSet();
+    final toSubscribe = desiredSet.difference(_currentSubscriptions);
+    final toUnsubscribe = _currentSubscriptions.difference(desiredSet);
+
+    // 구독 해지
+    for (var code in toUnsubscribe) {
+      _socketManager.unsubscribeFromStock(code);
+      _currentSubscriptions.remove(code);
+    }
+
+    // 신규 구독
+    for (var code in toSubscribe) {
+      final stockIndex = _allStocksCache.indexWhere((s) => s.stockCode == code);
+      if (stockIndex != -1) {
+        final stock = _allStocksCache[stockIndex];
+        _socketManager.subscribeToStock(
+          stock.stockCode,
+          stock.currentPrice.toDouble(),
+        );
+        _currentSubscriptions.add(code);
+      }
+    }
   }
 
   @override
@@ -67,26 +78,8 @@ class MockStockRemoteDataSource implements StockRemoteDataSource {
       _allStocksCache = stocks;
 
       // 초기 로딩 시 이미 감시 종목이 있다면 구독 수행
-      final currentWatched = _watchedStocksSubject.value;
-      if (currentWatched.isNotEmpty) {
-        for (var code in currentWatched) {
-          final stock = _allStocksCache.firstWhere(
-            (s) => s.stockCode == code,
-            orElse: () => StockModel(
-              stockCode: '',
-              currentPrice: 0,
-              changeRate: 0,
-              type: '',
-            ),
-          );
-          if (stock.stockCode.isNotEmpty) {
-            _socketManager.subscribeToStock(
-              stock.stockCode,
-              stock.currentPrice.toDouble(),
-            );
-          }
-        }
-      }
+      // 초기 로딩 시 키시된 감시 종목 구독 동기화
+      _syncSubscriptions(_watchedStocksSubject.value);
 
       // 2. 소켓 메시지 스트림을 StockEntity 스트림으로 변환
       return _socketManager.messageStream
@@ -100,7 +93,6 @@ class MockStockRemoteDataSource implements StockRemoteDataSource {
                 timestamp: message.timestamp,
               );
             }
-            // 다른 메시지 타입은 무시하거나 적절히 처리
             return StockEntity(
               stockCode: '',
               currentPrice: 0,
@@ -108,7 +100,6 @@ class MockStockRemoteDataSource implements StockRemoteDataSource {
               type: 'unknown',
               timestamp: DateTime.now(),
             );
-            // 실제로는 filter 등을 써서 unknown은 걸러내는 게 좋음
           })
           .where((entity) => entity.type != 'unknown');
     });

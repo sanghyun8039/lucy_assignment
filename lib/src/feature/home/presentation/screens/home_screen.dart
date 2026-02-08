@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
           : AppColors.backgroundDark,
       appBar: AppBar(
         title: Text(
-          context.s.markets,
+          context.l10n.markets,
           style: AppTypography.displayMedium.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -57,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ? AppColors.backgroundLight
             : AppColors.backgroundDark,
         elevation: 0,
+        scrolledUnderElevation: 0,
         // actions: [
         //   Padding(
         //     padding: const EdgeInsets.only(right: 16),
@@ -94,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (filteredStocks.isEmpty) {
                     return Center(
                       child: Text(
-                        context.s.noResultsFound,
+                        context.l10n.noResultsFound,
                         style: AppTypography.bodyLarge.copyWith(
                           color: context.theme.brightness == Brightness.light
                               ? AppColors.textPrimaryLight

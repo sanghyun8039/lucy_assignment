@@ -3,8 +3,13 @@ import 'package:go_router/go_router.dart';
 import 'package:lucy_assignment/src/core/router/app_route_name.dart';
 import 'package:lucy_assignment/src/feature/home/presentation/screens/home_screen.dart';
 import 'package:lucy_assignment/src/feature/index/presentation/index_screen.dart';
+import 'package:lucy_assignment/src/feature/setting/presentation/screens/settings_screen.dart';
 import 'package:lucy_assignment/src/feature/splash/presentation/screens/splash_screen.dart';
+import 'package:lucy_assignment/src/feature/stock_detail/presentation/stock_detail_screen.dart';
 import 'package:lucy_assignment/src/feature/watchlist/presentation/screens/watchlist_screen.dart';
+
+import 'package:provider/provider.dart';
+import 'package:lucy_assignment/src/feature/stock_detail/presentation/providers/scroll_sync_provider.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final bottomNavigatorKey = GlobalKey<StatefulNavigationShellState>(
@@ -49,12 +54,25 @@ class AppRoute {
               ),
             ],
           ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: "/settings",
+                name: AppRouteName.settings,
+                builder: (context, state) => const SettingsScreen(),
+              ),
+            ],
+          ),
         ],
       ),
-      // GoRoute(
-      //   path: '/',
-      //   builder: (context, state) => const StockListPage(),
-      // ),
+      GoRoute(
+        path: '/stock_detail',
+        name: AppRouteName.stockDetail,
+        builder: (context, state) => ChangeNotifierProvider(
+          create: (_) => ScrollSyncProvider(),
+          child: const StockDetailScreen(),
+        ),
+      ),
     ],
   );
 }

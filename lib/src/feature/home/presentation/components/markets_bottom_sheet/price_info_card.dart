@@ -41,7 +41,7 @@ class PriceInfoCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            context.s.closingPrice,
+            context.l10n.closingPrice,
             style: AppTypography.bodyMedium.copyWith(
               color: AppColors.textSecondary,
               fontWeight: FontWeight.w500,
@@ -53,7 +53,7 @@ class PriceInfoCard extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    '${currencyFormat.format(stock?.currentPrice ?? 0)} 원',
+                    '${currencyFormat.format(stock?.currentPrice ?? 0)} KRW',
                     style: AppTypography.titleLarge.copyWith(
                       fontWeight: FontWeight.bold,
                       color: priceColor,

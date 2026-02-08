@@ -15,7 +15,7 @@ class StockSearchBar extends StatelessWidget {
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          hintText: context.s.searchBarPlaceholder,
+          hintText: context.l10n.searchBarPlaceholder,
           hintStyle: AppTypography.bodyLarge.copyWith(
             color: context.theme.brightness == Brightness.light
                 ? AppColors.textPrimaryLight.withValues(alpha: 0.5)

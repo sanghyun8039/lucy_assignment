@@ -17,7 +17,7 @@ class TargetPriceInput extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            context.s.targetPrice,
+            context.l10n.targetPrice,
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.textSecondary,
               fontWeight: FontWeight.w600,
@@ -38,7 +38,7 @@ class TargetPriceInput extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
             decoration: InputDecoration(
-              suffixText: '원',
+              suffixText: 'KRW',
               suffixStyle: AppTypography.titleLarge.copyWith(
                 color: AppColors.textSecondary,
                 fontWeight: FontWeight.bold,

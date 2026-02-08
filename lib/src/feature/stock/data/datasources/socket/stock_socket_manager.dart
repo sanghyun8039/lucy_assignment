@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:lucy_assignment/src/feature/stock/data/models/socket/stock_socket_message.dart';
 import 'package:rxdart/rxdart.dart';
 
 class StockSocketManager {
-  // 실제 소켓 연결 대신 BehaviorSubject로 데이터 스트림 흉내
   final _messageSubject = BehaviorSubject<StockSocketMessage>();
   Stream<StockSocketMessage> get messageStream => _messageSubject.stream;
 
@@ -28,15 +26,19 @@ class StockSocketManager {
     _messageSubject.close();
   }
 
+  // 구독자 수 관리 (Reference Waiting)
+  final Map<String, int> _subscriberCount = {};
+
   void subscribeToStock(String stockCode, double currentPrice) {
+    _subscriberCount[stockCode] = (_subscriberCount[stockCode] ?? 0) + 1;
+    print(
+      'StockSocketManager: Subscribe to $stockCode (Count: ${_subscriberCount[stockCode]})',
+    );
+
     if (_timers.containsKey(stockCode)) return;
 
-    print('StockSocketManager: Subscribe to $stockCode');
-
-    // 변동된 가격을 누적하기 위해 변수 사용
     double lastPrice = currentPrice;
 
-    // 모의 데이터 생성 주기
     final interval = Duration(milliseconds: 500 + _random.nextInt(1500));
 
     _timers[stockCode] = Timer.periodic(interval, (timer) {
@@ -52,7 +54,7 @@ class StockSocketManager {
       final message = StockSocketMessage.priceUpdate(
         type: 'price_update',
         stockCode: stockCode,
-        currentPrice: lastPrice, // 소수점 로직이 필요하면 조정
+        currentPrice: lastPrice,
         changeRate: changeRate,
         timestamp: DateTime.now(),
       );
@@ -62,8 +64,17 @@ class StockSocketManager {
   }
 
   void unsubscribeFromStock(String stockCode) {
-    print('StockSocketManager: Unsubscribe from $stockCode');
-    _timers[stockCode]?.cancel();
-    _timers.remove(stockCode);
+    if (!_subscriberCount.containsKey(stockCode)) return;
+
+    _subscriberCount[stockCode] = (_subscriberCount[stockCode] ?? 0) - 1;
+    print(
+      'StockSocketManager: Unsubscribe from $stockCode (Count: ${_subscriberCount[stockCode]})',
+    );
+
+    if (_subscriberCount[stockCode]! <= 0) {
+      _timers[stockCode]?.cancel();
+      _timers.remove(stockCode);
+      _subscriberCount.remove(stockCode);
+    }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lucy_assignment/src/core/design_system/design_system.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lucy_assignment/src/core/constants/alert_type.dart';
@@ -11,7 +12,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:lucy_assignment/src/feature/watchlist/presentation/providers/watchlist_provider.dart';
 import 'package:lucy_assignment/src/l10n/app_localizations.dart';
-import 'package:lucy_assignment/src/core/utils/global_alert_listener.dart'; // Import global listener
+import 'package:lucy_assignment/src/core/utils/global_alert_listener.dart';
+import 'package:lucy_assignment/src/feature/setting/presentation/providers/settings_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,33 +48,39 @@ class MyApp extends StatelessWidget {
             getPriceStreamUseCase: sl(),
           ),
         ),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
-      child: MaterialApp.router(
-        themeMode: ThemeMode.dark,
-        darkTheme: AppTheme.darkTheme,
-        theme: AppTheme.lightTheme,
-        routerConfig: AppRoute.router,
-        locale: Locale('ko'), // 현재 선택된 언어
-        localizationsDelegates: [
-          AppLocalizations.delegate, // 우리가 만든 번역 delegate
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('en'), // 영어
-          Locale('ko'), // 한국어
-        ],
+      child: ScreenUtilInit(
+        designSize: const Size(375, 812),
+        minTextAdapt: true,
+        splitScreenMode: true,
         builder: (context, child) {
-          final MediaQueryData data = MediaQuery.of(context);
-          return GlobalAlertListener(
-            navigatorKey: rootNavigatorKey,
-            // Wrap with global listener
-            child: MediaQuery(
-              // making sure the text scale not affected by system font size
-              data: data.copyWith(textScaler: const TextScaler.linear(1.0)),
-              child: child ?? const SizedBox(),
-            ),
+          // Access SettingsProvider
+          final settings = context.watch<SettingsProvider>();
+
+          return MaterialApp.router(
+            themeMode: settings.themeMode,
+            darkTheme: AppTheme.darkTheme,
+            theme: AppTheme.lightTheme,
+            routerConfig: AppRoute.router,
+            locale: settings.locale,
+            localizationsDelegates: [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [Locale('en'), Locale('ko')],
+            builder: (context, child) {
+              final MediaQueryData data = MediaQuery.of(context);
+              return GlobalAlertListener(
+                navigatorKey: rootNavigatorKey,
+                child: MediaQuery(
+                  data: data.copyWith(textScaler: const TextScaler.linear(1.0)),
+                  child: child ?? const SizedBox(),
+                ),
+              );
+            },
           );
         },
       ),

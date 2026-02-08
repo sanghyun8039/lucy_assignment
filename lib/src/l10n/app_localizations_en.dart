@@ -9,10 +9,16 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get markets => 'Markets';
+  String get home => 'Home';
 
   @override
   String get watchlist => 'Watchlist';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get markets => 'Markets';
 
   @override
   String get noResultsFound => 'No results found';
@@ -58,4 +64,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get update => 'Update';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get summary => 'Summary';
+
+  @override
+  String get input => 'Input';
+
+  @override
+  String get details => 'Details';
+
+  @override
+  String get marketPosition => 'Market Position';
+
+  @override
+  String get investmentIndicators => 'Investment Indicators';
+
+  @override
+  String get volume => 'Volume';
+
+  @override
+  String get marketCap => 'Market Cap';
+
+  @override
+  String get listedShares => 'Listed Shares';
+
+  @override
+  String get marketWeight => 'Market Weight';
+
+  @override
+  String get kospiMarketCap => 'KOSPI Market Cap';
+
+  @override
+  String get enterMemo => 'Enter memo';
+
+  @override
+  String get memo => 'Memo';
+
+  @override
+  String get createMemo => 'Create Memo';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get themeMode => 'Theme Mode';
+
+  @override
+  String get light => 'Light';
+
+  @override
+  String get dark => 'Dark';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get korean => 'Korean';
+
+  @override
+  String get localization => 'Localization';
+
+  @override
+  String get lang_default => 'Default';
 }

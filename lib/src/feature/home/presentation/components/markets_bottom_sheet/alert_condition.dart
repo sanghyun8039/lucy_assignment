@@ -23,7 +23,7 @@ class AlertCondition extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            context.s.alertCondition,
+            context.l10n.alertCondition,
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.textSecondary,
               fontWeight: FontWeight.w600,
