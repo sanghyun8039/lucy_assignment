@@ -15,11 +15,8 @@ class ScrollSyncProvider extends ChangeNotifier {
     _isProgrammaticScroll = true;
     notifyListeners();
 
-    // Reset flag after animation completes
     Future.delayed(duration, () {
       _isProgrammaticScroll = false;
-      // Optional: re-check visibility after scroll finishes?
-      // _recalculateActiveIndex();
     });
   }
 
@@ -34,7 +31,6 @@ class ScrollSyncProvider extends ChangeNotifier {
     int newIndex = _activeIndex;
     double maxFraction = -1.0;
 
-    // Sort entries by index to prioritize top sections in case of ties
     final sortedEntries = _visibilityMap.entries.toList()
       ..sort((a, b) => a.key.compareTo(b.key));
 
