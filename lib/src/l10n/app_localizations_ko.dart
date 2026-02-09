@@ -87,6 +87,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get volume => '거래량';
 
   @override
+  String get openPrice => 'Open';
+
+  @override
+  String get highPrice => 'High';
+
+  @override
+  String get lowPrice => 'Low';
+
+  @override
   String get marketCap => '시가총액';
 
   @override

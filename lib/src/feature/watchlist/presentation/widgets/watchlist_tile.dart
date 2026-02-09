@@ -1,19 +1,18 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucy_assignment/src/core/constants/alert_type.dart';
+import 'package:lucy_assignment/src/core/utils/app_formatters.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_item.dart';
 import 'package:lucy_assignment/src/feature/watchlist/presentation/widgets/stock_price_widget.dart';
-import 'package:provider/provider.dart';
 import 'package:lucy_assignment/src/core/design_system/colors.dart';
 import 'package:lucy_assignment/src/core/design_system/typography.dart';
 import 'package:lucy_assignment/src/core/di/service_locator.dart';
 import 'package:lucy_assignment/src/core/router/app_route_name.dart';
 import 'package:lucy_assignment/src/feature/logo/domain/usecases/get_logo_file_usecase.dart';
-import 'package:lucy_assignment/src/feature/watchlist/presentation/providers/watchlist_provider.dart';
 import 'package:lucy_assignment/src/feature/home/presentation/widgets/markets_bottom_sheet.dart';
 import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart';
 
@@ -39,7 +38,7 @@ class WatchlistTile extends StatelessWidget {
         );
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        padding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
         decoration: BoxDecoration(
           color: context.theme.brightness == Brightness.light
               ? AppColors.backgroundLight
@@ -54,16 +53,55 @@ class WatchlistTile extends StatelessWidget {
         child: Row(
           children: [
             _buildLogo(context),
-            const SizedBox(width: 16),
-            Expanded(child: _buildStockInfo(context)),
-            const SizedBox(width: 16),
-            // ✅ 수정됨: 독립 위젯 + RepaintBoundary 적용
-            RepaintBoundary(
-              child: StockPriceWidget(
-                stockCode: item.stockCode,
-                initialStock: stockEntity,
+            Gap(16),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(child: _buildStockInfo(context)),
+                      Gap(16),
+                      RepaintBoundary(
+                        child: StockPriceWidget(
+                          stockCode: item.stockCode,
+                          initialStock: stockEntity,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '${context.l10n.targetPrice}: ${item.targetPrice != null ? AppFormatters.comma.format(item.targetPrice) : '-'} KRW',
+                        style: AppTypography.labelSmall.copyWith(
+                          color: AppColors.textSecondary.withValues(alpha: 0.7),
+                          fontSize: 11,
+                        ),
+                      ),
+                      if (item.targetPrice != null) ...[
+                        const SizedBox(width: 4),
+                        Icon(
+                          switch (item.alertType) {
+                            AlertType.upper => Icons.arrow_upward,
+                            AlertType.lower => Icons.arrow_downward,
+                            AlertType.bidir => Icons.swap_vert,
+                          },
+                          size: 14,
+                          color: switch (item.alertType) {
+                            AlertType.upper => AppColors.growth2,
+                            AlertType.lower => AppColors.decline2,
+                            AlertType.bidir => AppColors.primary,
+                          },
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
               ),
             ),
+
+            // ✅ 수정됨: 독립 위젯 + RepaintBoundary 적용
             _buildEditButton(context),
           ],
         ),
@@ -72,13 +110,13 @@ class WatchlistTile extends StatelessWidget {
   }
 
   Widget _buildStockInfo(BuildContext context) {
-    final currencyFormat = NumberFormat("#,###");
     final stockName =
         stockEntity?.stockName ??
         item.stockCode; // Use initial data for name/code
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           stockName,
@@ -100,106 +138,7 @@ class WatchlistTile extends StatelessWidget {
             fontSize: 12,
           ),
         ),
-        const SizedBox(height: 4),
-        Row(
-          children: [
-            Text(
-              '${context.l10n.targetPrice}: ${item.targetPrice != null ? currencyFormat.format(item.targetPrice) : '-'} KRW',
-              style: AppTypography.labelSmall.copyWith(
-                color: AppColors.textSecondary.withValues(alpha: 0.7),
-                fontSize: 11,
-              ),
-            ),
-            if (item.targetPrice != null) ...[
-              const SizedBox(width: 4),
-              Icon(
-                switch (item.alertType) {
-                  AlertType.upper => Icons.arrow_upward,
-                  AlertType.lower => Icons.arrow_downward,
-                  AlertType.bidir => Icons.swap_vert,
-                },
-                size: 14,
-                color: switch (item.alertType) {
-                  AlertType.upper => AppColors.growth2,
-                  AlertType.lower => AppColors.decline2,
-                  AlertType.bidir => AppColors.primary,
-                },
-              ),
-            ],
-          ],
-        ),
       ],
-    );
-  }
-
-  Widget _buildPriceInfo(BuildContext context) {
-    return StreamBuilder<StockEntity>(
-      stream: context.read<WatchlistProvider>().priceStream.where(
-        (stock) => stock.stockCode == item.stockCode,
-      ),
-      initialData: stockEntity,
-      builder: (context, snapshot) {
-        final realtimeStock = snapshot.data;
-        final stock =
-            stockEntity?.copyWith(
-              currentPrice:
-                  realtimeStock?.currentPrice ?? stockEntity?.currentPrice ?? 0,
-              changeRate:
-                  realtimeStock?.changeRate ?? stockEntity?.changeRate ?? 0.0,
-            ) ??
-            realtimeStock;
-
-        final currentPrice = stock?.currentPrice ?? 0;
-        final changeRate = stock?.changeRate ?? 0.0;
-        final isRising = changeRate > 0;
-        final isFalling = changeRate < 0;
-
-        final priceColor = isRising
-            ? AppColors.growth2
-            : (isFalling ? AppColors.decline2 : AppColors.textSecondary);
-
-        final currencyFormat = NumberFormat("#,###");
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              stock != null ? '${currencyFormat.format(currentPrice)} KRW' : '',
-              style: AppTypography.bodyLarge.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: priceColor,
-              ),
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (isRising)
-                  const Icon(
-                    Icons.arrow_drop_up,
-                    color: AppColors.growth2,
-                    size: 12,
-                  ),
-                if (isFalling)
-                  const Icon(
-                    Icons.arrow_drop_down,
-                    color: AppColors.decline2,
-                    size: 12,
-                  ),
-                const SizedBox(width: 2),
-                Text(
-                  '${changeRate.abs().toStringAsFixed(2)}%',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: priceColor,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
     );
   }
 

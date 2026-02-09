@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:lucy_assignment/src/core/design_system/design_system.dart';
 import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart';
-import 'package:lucy_assignment/src/feature/home/presentation/components/markets_bottom_sheet/target_price_input.dart';
 import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/detail_sections.dart';
 
 class InputSection extends StatefulWidget {

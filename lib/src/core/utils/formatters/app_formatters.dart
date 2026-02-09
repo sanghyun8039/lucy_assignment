@@ -1,9 +1,14 @@
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-class PriceInputFormatter extends TextInputFormatter {
-  final NumberFormat _formatter = NumberFormat("#,###");
+class AppFormatters {
+  static final comma = NumberFormat("#,###");
 
+  // Private constructor to prevent instantiation
+  AppFormatters._();
+}
+
+class PriceInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
@@ -14,7 +19,7 @@ class PriceInputFormatter extends TextInputFormatter {
 
     // 포맷 적용
     if (newText.isNotEmpty) {
-      newText = _formatter.format(int.parse(newText));
+      newText = AppFormatters.comma.format(int.parse(newText));
     }
 
     // 커서 위치 조정

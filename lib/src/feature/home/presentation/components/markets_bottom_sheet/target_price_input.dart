@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:lucy_assignment/src/core/design_system/colors.dart';
 import 'package:lucy_assignment/src/core/design_system/typography.dart';
 import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart';
-import 'package:lucy_assignment/src/core/utils/formatters/price_input_formatter.dart';
+import 'package:lucy_assignment/src/core/utils/formatters/app_formatters.dart';
 
 class TargetPriceInput extends StatelessWidget {
   final TextEditingController controller;

@@ -5,7 +5,7 @@ import 'package:lucy_assignment/src/feature/home/presentation/screens/home_scree
 import 'package:lucy_assignment/src/feature/index/presentation/index_screen.dart';
 import 'package:lucy_assignment/src/feature/setting/presentation/screens/settings_screen.dart';
 import 'package:lucy_assignment/src/feature/splash/presentation/screens/splash_screen.dart';
-import 'package:lucy_assignment/src/feature/stock_detail/presentation/stock_detail_screen.dart';
+import 'package:lucy_assignment/src/feature/stock_detail/presentation/screens/stock_detail_screen.dart';
 import 'package:lucy_assignment/src/feature/watchlist/presentation/screens/watchlist_screen.dart';
 
 import 'package:provider/provider.dart';

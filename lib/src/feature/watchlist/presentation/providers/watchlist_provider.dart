@@ -9,6 +9,7 @@ import 'package:lucy_assignment/src/feature/watchlist/domain/usecases/remove_wat
 import 'package:lucy_assignment/src/feature/watchlist/domain/usecases/get_price_stream_usecase.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/usecases/get_stock_usecase.dart';
+import 'package:lucy_assignment/src/core/utils/app_formatters.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AlertEvent {
@@ -37,6 +38,7 @@ class WatchlistProvider extends ChangeNotifier {
 
   final Map<String, StockEntity> _priceMap = {};
   final Map<String, StreamController<StockEntity>> _stockControllers = {};
+  final Map<String, Stream<StockEntity>> _throttledStreams = {};
 
   // Broadcast stream for price updates
   final _priceStreamController = StreamController<StockEntity>.broadcast();
@@ -100,32 +102,35 @@ class WatchlistProvider extends ChangeNotifier {
   }
 
   Stream<StockEntity> getStockStream(String stockCode) {
-    if (_stockControllers.containsKey(stockCode)) {
-      // 0.5초(500ms) 간격으로 샘플링하여 UI 리빌드 횟수를 강제로 낮춤
-      return _stockControllers[stockCode]!.stream.throttleTime(
-        const Duration(milliseconds: 500),
-        trailing: true, // 마지막 값은 반드시 방출
-        leading: false,
-      );
+    if (_throttledStreams.containsKey(stockCode)) {
+      return _throttledStreams[stockCode]!;
+    }
+    if (!_stockControllers.containsKey(stockCode)) {
+      final controller = StreamController<StockEntity>.broadcast();
+      _stockControllers[stockCode] = controller;
+
+      // 초기값 주입
+      if (_priceMap.containsKey(stockCode)) {
+        Future.microtask(() {
+          if (!controller.isClosed) controller.add(_priceMap[stockCode]!);
+        });
+      }
     }
 
-    // 컨트롤러 생성 (Lazy Creation)
-    final controller = StreamController<StockEntity>.broadcast();
-    _stockControllers[stockCode] = controller;
+    // 3. 스로틀링 스트림 생성 및 'Broadcast' 변환
+    // asBroadcastStream()을 해야 여러 곳(위젯)에서 구독해도 에러가 안 납니다.
+    final throttledStream = _stockControllers[stockCode]!.stream
+        .throttleTime(
+          const Duration(milliseconds: 500),
+          trailing: true,
+          leading: true, // ✅ 수정 제안: true로 하면 첫 데이터가 0.5초 기다리지 않고 즉시 뜸 (반응성 향상)
+        )
+        .asBroadcastStream();
 
-    // 초기값 전달
-    if (_priceMap.containsKey(stockCode)) {
-      Future.microtask(() {
-        if (!controller.isClosed) controller.add(_priceMap[stockCode]!);
-      });
-    }
+    // 4. 캐시에 저장
+    _throttledStreams[stockCode] = throttledStream;
 
-    // ✅ 여기서도 throttleTime 적용
-    return controller.stream.throttleTime(
-      const Duration(milliseconds: 500),
-      trailing: true,
-      leading: false,
-    );
+    return throttledStream;
   }
 
   void _checkAlerts(StockEntity stock) {
@@ -169,7 +174,7 @@ class WatchlistProvider extends ChangeNotifier {
           final directionText = effectiveType == AlertType.upper ? '이상' : '이하';
           _alertController.add(
             AlertEvent(
-              '${stock.stockName ?? stock.stockCode} 목표가 도달! ($directionText $target KRW)',
+              '${stock.stockName ?? stock.stockCode} 목표가 도달! ($directionText ${AppFormatters.comma.format(target)} KRW)',
               effectiveType,
             ),
           );
@@ -193,7 +198,7 @@ class WatchlistProvider extends ChangeNotifier {
     _watchlistSubscription?.cancel();
     _priceSubscription?.cancel();
     _alertController.close();
-    //_priceStreamController.close();
+    _throttledStreams.clear(); // 캐시도 비움
     super.dispose();
   }
 

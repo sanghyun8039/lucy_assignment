@@ -254,6 +254,24 @@ abstract class AppLocalizations {
   /// **'Volume'**
   String get volume;
 
+  /// No description provided for @openPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get openPrice;
+
+  /// No description provided for @highPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get highPrice;
+
+  /// No description provided for @lowPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get lowPrice;
+
   /// No description provided for @marketCap.
   ///
   /// In en, this message translates to:

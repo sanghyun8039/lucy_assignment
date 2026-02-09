@@ -8,6 +8,7 @@ import 'package:lucy_assignment/src/core/design_system/design_system.dart';
 import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart';
 import 'package:lucy_assignment/src/feature/stock/data/models/socket/stock_socket_message.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
+import 'package:lucy_assignment/src/core/utils/app_formatters.dart';
 
 class PriceSection extends StatefulWidget {
   final StockEntity initialStock;
@@ -123,7 +124,7 @@ class _PriceSectionState extends State<PriceSection>
             textBaseline: TextBaseline.alphabetic,
             children: [
               Text(
-                currencyFormat.format(_currentPrice),
+                "${AppFormatters.comma.format(_currentPrice)}",
                 style: AppTypography.displayLarge.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 36.sp,
@@ -178,12 +179,12 @@ class _PriceSectionState extends State<PriceSection>
 
                           String text;
                           if (value >= 1000) {
-                            final formattedValue = NumberFormat(
-                              "#,###",
-                            ).format(value.toInt() / 1000);
+                            final formattedValue = AppFormatters.comma.format(
+                              value.toInt() / 1000,
+                            );
                             text = '${formattedValue}k';
                           } else {
-                            text = NumberFormat("#,###").format(value.toInt());
+                            text = AppFormatters.comma.format(value.toInt());
                           }
 
                           return Text(

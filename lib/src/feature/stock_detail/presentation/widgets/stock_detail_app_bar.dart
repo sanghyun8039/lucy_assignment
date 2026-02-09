@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:lucy_assignment/src/core/design_system/design_system.dart';
 import 'package:lucy_assignment/src/core/di/service_locator.dart';
@@ -25,8 +24,8 @@ class StockDetailAppBar extends StatelessWidget {
         children: [
           // Logo placeholder
           Container(
-            width: 32.w, // Design uses w-12 (3rem = 48px)
-            height: 32.h,
+            width: 32,
+            height: 32,
             decoration: BoxDecoration(
               color: Theme.of(context).brightness == Brightness.light
                   ? Colors.white

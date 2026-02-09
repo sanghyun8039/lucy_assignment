@@ -47,16 +47,13 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
     final stockCode =
         GoRouterState.of(context).pathParameters['stockCode'] ?? '-';
 
-    // Try to get from provider (cached)
-    // Note: We use context.read because we don't want to rebuild the whole screen on every minor update
-    // just for the initial setup. The specific sections listen to streams.
     final cachedStock = context.read<WatchlistProvider>().getPrice(stockCode);
 
     final newStock =
         cachedStock ??
         StockEntity(
           stockCode: stockCode,
-          stockName: stockCode, // Temporary name until loaded
+          stockName: stockCode,
           currentPrice: 0,
           changeRate: 0,
           timestamp: DateTime.now(),
@@ -64,7 +61,6 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
 
     _stock = newStock;
 
-    // Only subscribe if the stock code has changed
     if (_stock.stockCode != _subscribedStockCode) {
       if (_subscribedStockCode != null) {
         _socketManager.unsubscribeFromStock(_subscribedStockCode!);
@@ -104,99 +100,102 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Builder(
-        builder: (context) {
-          return CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              StockDetailAppBar(stock: _stock),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        body: Builder(
+          builder: (context) {
+            return CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                StockDetailAppBar(stock: _stock),
 
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: SectionNavBarDelegate(
-                  onTabTap: (index) async {
-                    _scrollToIndex(index);
-                  },
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: SectionNavBarDelegate(
+                    onTabTap: (index) async {
+                      _scrollToIndex(index);
+                    },
+                  ),
                 ),
-              ),
 
-              SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    // 0: Price
-                    SectionDetector(
-                      index: 0,
-                      child: Container(
-                        key: _sectionKeys[0],
-                        child: PriceSection(
-                          initialStock: _stock,
-                          priceStream: _socketManager.messageStream.where(
-                            (m) => m.stockCode == _stock.stockCode,
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      // 0: Price
+                      SectionDetector(
+                        index: 0,
+                        child: Container(
+                          key: _sectionKeys[0],
+                          child: PriceSection(
+                            initialStock: _stock,
+                            priceStream: _socketManager.messageStream.where(
+                              (m) => m.stockCode == _stock.stockCode,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SectionDivider(),
+                      const SectionDivider(),
 
-                    // 1: Summary
-                    SectionDetector(
-                      index: 1,
-                      child: Container(
-                        key: _sectionKeys[1],
-                        child: SummarySection(stock: _stock),
-                      ),
-                    ),
-                    const SectionDivider(),
-
-                    // 2: Input (Alerts)
-                    SectionDetector(
-                      index: 2,
-                      child: Container(
-                        key: _sectionKeys[2],
-                        child: InputSection(),
-                      ),
-                    ),
-                    const SectionDivider(),
-
-                    // 3: Details
-                    SectionDetector(
-                      index: 3,
-                      child: Container(
-                        key: _sectionKeys[3],
-                        child: const DetailsSection(),
-                      ),
-                    ),
-                    const SectionDivider(),
-
-                    // Key Stats Section (Added here)
-                    SectionDetector(
-                      index: 4,
-                      child: Container(
-                        key: _sectionKeys[4],
-                        child: KeyStatsSection(stock: _stock),
-                      ),
-                    ),
-                    const SectionDivider(),
-
-                    // 5: Market Position
-                    SectionDetector(
-                      index: 5,
-                      child: Container(
-                        key: _sectionKeys[5],
-                        child: MarketPositionSection(
-                          rank: _stock.rank,
-                          weight: _stock.marketWeight,
+                      // 1: Summary
+                      SectionDetector(
+                        index: 1,
+                        child: Container(
+                          key: _sectionKeys[1],
+                          child: SummarySection(stock: _stock),
                         ),
                       ),
-                    ),
-                    Gap(200),
-                  ],
+                      const SectionDivider(),
+
+                      // 2: Input (Alerts)
+                      SectionDetector(
+                        index: 2,
+                        child: Container(
+                          key: _sectionKeys[2],
+                          child: InputSection(),
+                        ),
+                      ),
+                      const SectionDivider(),
+
+                      // 3: Details
+                      SectionDetector(
+                        index: 3,
+                        child: Container(
+                          key: _sectionKeys[3],
+                          child: const DetailsSection(),
+                        ),
+                      ),
+                      const SectionDivider(),
+
+                      // Key Stats Section (Added here)
+                      SectionDetector(
+                        index: 4,
+                        child: Container(
+                          key: _sectionKeys[4],
+                          child: KeyStatsSection(stock: _stock),
+                        ),
+                      ),
+                      const SectionDivider(),
+
+                      // 5: Market Position
+                      SectionDetector(
+                        index: 5,
+                        child: Container(
+                          key: _sectionKeys[5],
+                          child: MarketPositionSection(
+                            rank: _stock.rank,
+                            weight: _stock.marketWeight,
+                          ),
+                        ),
+                      ),
+                      Gap(200),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }

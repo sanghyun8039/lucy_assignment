@@ -31,7 +31,14 @@ class WatchlistScreen extends StatelessWidget {
         selector: (context, provider) => provider.watchlist,
         builder: (context, watchlist, child) {
           if (watchlist.isEmpty) {
-            return const Center(child: Text("Empty")); // (축약함)
+            return Center(
+              child: Text(
+                context.l10n.noWatchlist,
+                style: AppTypography.bodyLarge.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            );
           }
 
           return ListView.builder(

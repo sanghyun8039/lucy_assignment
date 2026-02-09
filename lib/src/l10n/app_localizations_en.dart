@@ -87,6 +87,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get volume => 'Volume';
 
   @override
+  String get openPrice => 'Open';
+
+  @override
+  String get highPrice => 'High';
+
+  @override
+  String get lowPrice => 'Low';
+
+  @override
   String get marketCap => 'Market Cap';
 
   @override
