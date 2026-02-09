@@ -8,6 +8,7 @@ import 'package:lucy_assignment/src/core/constants/alert_type.dart';
 import 'package:lucy_assignment/src/feature/watchlist/presentation/providers/watchlist_provider.dart';
 import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart';
 import 'package:lucy_assignment/src/core/utils/formatters/app_formatters.dart';
+import 'package:lucy_assignment/src/feature/watchlist/domain/entities/alert_event.dart';
 
 class GlobalAlertListener extends StatefulWidget {
   final Widget child;
@@ -72,9 +73,8 @@ class _GlobalAlertListenerState extends State<GlobalAlertListener>
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: event.type == AlertType.upper
-                    ? AppColors
-                          .growth // Red
-                    : AppColors.decline, // Blue
+                    ? AppColors.growth
+                    : AppColors.decline,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(

@@ -94,7 +94,6 @@ class _SectionNavBarBodyState extends State<_SectionNavBarBody> {
       final relativeX = tabGlobal.dx - listGlobal.dx;
       final currentScroll = _scrollController.offset;
 
-      // Target position to center the tab
       final targetScroll =
           (currentScroll + relativeX) -
           (listBox.size.width / 2) +
@@ -132,7 +131,6 @@ class _SectionNavBarBodyState extends State<_SectionNavBarBody> {
                       right: index == _tabs.length - 1 ? 0 : 8,
                     ),
                     child: Center(
-                      // Assign GlobalKey to each tab for scrolling
                       key: _tabKeys[index],
                       child: _TabButton(
                         label: _tabs[index],
@@ -164,7 +162,6 @@ class _TabButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // We still use Selector to rebuild JUST the button style when active index changes
     return Selector<ScrollSyncProvider, int>(
       selector: (_, provider) => provider.activeIndex,
       builder: (context, activeIndex, _) {

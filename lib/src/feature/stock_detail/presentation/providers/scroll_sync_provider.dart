@@ -44,16 +44,6 @@ class ScrollSyncProvider extends ChangeNotifier {
         newIndex = entry.key;
       }
     }
-
-    // Only update if there's a change and the new section is significantly visible
-    // (e.g. at least 10% visible to avoid flickering on tiny overlaps)
-    // However, if we scroll up, we want the top one.
-    // The "maxFraction" logic handles most cases.
-    // If multiple sections are 1.0 visible (small sections), the first one (sorted) wins.
-
-    // We add a small condition: if the current active section is still > 0.5 visible, maybe keep it?
-    // But "max fraction" is usually robust enough for standard lists.
-
     if (_activeIndex != newIndex && maxFraction > 0.05) {
       _activeIndex = newIndex;
       notifyListeners();

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 abstract class LogoRemoteDataSource {
@@ -23,8 +24,7 @@ class LogoRemoteDataSourceImpl implements LogoRemoteDataSource {
       );
       return response.data;
     } catch (e) {
-      // 로고가 없을 수 있으므로 null 반환 또는 에러 처리
-      print('Failed to download logo for $code: $e');
+      debugPrint('Failed to download logo for $code: $e');
       return null;
     }
   }
@@ -36,8 +36,7 @@ class LogoRemoteDataSourceImpl implements LogoRemoteDataSource {
       final response = await _dio.head(url);
       return int.parse(response.headers.value('content-length') ?? '0');
     } catch (e) {
-      // 로고가 없을 수 있으므로 null 반환 또는 에러 처리
-      print('Failed to get logo size for $code: $e');
+      debugPrint('Failed to get logo size for $code: $e');
       return null;
     }
   }

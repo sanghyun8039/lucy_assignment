@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:lucy_assignment/src/core/design_system/design_system.dart';
 import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
-import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/detail_sections.dart';
+import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/section_widget.dart';
 
 class KeyStatsSection extends StatelessWidget {
   final StockEntity stock;
@@ -22,8 +22,6 @@ class KeyStatsSection extends StatelessWidget {
         children: [
           SectionHeader(title: context.l10n.investmentIndicators),
           Gap(16),
-
-          // 2열 Grid Layout
           Wrap(
             spacing: 16,
             runSpacing: 16,

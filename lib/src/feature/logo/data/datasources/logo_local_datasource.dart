@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:lucy_assignment/src/feature/stock/data/models/stock_model.dart';
 import 'package:path_provider/path_provider.dart';
 
 abstract class LogoLocalDataSource {
   Future<void> init();
-  Future<List<dynamic>> getStockList();
+  Future<List<StockModel>> getStockList();
   Future<List<File>> getLocalLogos();
   Future<File> getLogoFile(String code);
   Future<void> saveLogo(String code, List<int> bytes);
@@ -25,12 +26,14 @@ class LogoLocalDataSourceImpl implements LogoLocalDataSource {
   }
 
   @override
-  Future<List<dynamic>> getStockList() async {
+  Future<List<StockModel>> getStockList() async {
     final jsonString = await rootBundle.loadString(
       'assets/jsons/stock_dumy.json',
     );
     final Map<String, dynamic> jsonData = jsonDecode(jsonString);
-    return jsonData['output'];
+    return jsonData['output']
+        .map<StockModel>((e) => StockModel.fromJson(e))
+        .toList();
   }
 
   @override

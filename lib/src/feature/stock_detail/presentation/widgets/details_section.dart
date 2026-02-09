@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart';
 
-import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/detail_sections.dart';
+import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/section_widget.dart';
 
 class DetailsSection extends StatefulWidget {
   const DetailsSection({super.key});

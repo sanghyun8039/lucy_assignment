@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:lucy_assignment/src/core/design_system/design_system.dart';
 import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart';
-import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/detail_sections.dart';
+import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/section_widget.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 
 class SummarySection extends StatelessWidget {

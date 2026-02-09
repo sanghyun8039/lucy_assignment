@@ -18,32 +18,28 @@ class StockDetailAppBar extends StatelessWidget {
     return SliverAppBar(
       pinned: true,
       floating: false,
-      expandedHeight: 0, // No expanded height for now, just pinned toolbar
+      expandedHeight: 0,
       title: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Logo placeholder
           Container(
             width: 32,
             height: 32,
             decoration: BoxDecoration(
               color: Theme.of(context).brightness == Brightness.light
                   ? Colors.white
-                  : Colors.black, // bg-white/black based on logo
+                  : Colors.black,
               shape: BoxShape.circle,
               border: Border.all(
                 color: AppColors.borderLight.withValues(alpha: 0.3),
-              ), // border-gray-700 equivalent
+              ),
             ),
             child: ClipOval(
               child: FutureBuilder<File?>(
                 future: sl<GetLogoFileUseCase>().call(stock.stockCode),
                 builder: (context, snapshot) {
                   if (snapshot.hasData && snapshot.data != null) {
-                    return Image.file(
-                      snapshot.data!,
-                      fit: BoxFit.contain,
-                    ); // box-fit contain in design
+                    return Image.file(snapshot.data!, fit: BoxFit.contain);
                   }
                   return Container(
                     alignment: Alignment.center,
@@ -71,7 +67,7 @@ class StockDetailAppBar extends StatelessWidget {
                 ),
               ),
               Text(
-                "${stock.stockCode} · KOSPI", // Mock exchange
+                "${stock.stockCode} · KOSPI",
                 style: AppTypography.labelMedium.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -85,7 +81,7 @@ class StockDetailAppBar extends StatelessWidget {
           : AppColors.backgroundDark,
       surfaceTintColor: context.theme.brightness == Brightness.light
           ? AppColors.backgroundLight
-          : AppColors.backgroundDark, // Avoid color change on scroll
+          : AppColors.backgroundDark,
       elevation: 0,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1.0),

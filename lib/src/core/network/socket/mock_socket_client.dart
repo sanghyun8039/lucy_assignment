@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:lucy_assignment/src/core/network/socket/socket_client.dart';
 
@@ -19,12 +20,12 @@ class MockSocketClient implements SocketClient {
 
   @override
   void connect() {
-    print('MockSocketClient: Connected');
+    debugPrint('MockSocketClient: Connected');
   }
 
   @override
   void disconnect() {
-    print('MockSocketClient: Disconnected');
+    debugPrint('MockSocketClient: Disconnected');
     for (var timer in _timers.values) {
       timer?.cancel();
     }
@@ -36,7 +37,7 @@ class MockSocketClient implements SocketClient {
   @override
   void subscribe(String topic, {dynamic data}) {
     _subscriberCount[topic] = (_subscriberCount[topic] ?? 0) + 1;
-    print(
+    debugPrint(
       'MockSocketClient: Subscribe to $topic (Count: ${_subscriberCount[topic]})',
     );
 
@@ -88,7 +89,7 @@ class MockSocketClient implements SocketClient {
     if (!_subscriberCount.containsKey(topic)) return;
 
     _subscriberCount[topic] = (_subscriberCount[topic] ?? 0) - 1;
-    print(
+    debugPrint(
       'MockSocketClient: Unsubscribe from $topic (Count: ${_subscriberCount[topic]})',
     );
 

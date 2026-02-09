@@ -43,7 +43,6 @@ class WatchlistTile extends StatelessWidget {
           color: context.theme.brightness == Brightness.light
               ? AppColors.backgroundLight
               : AppColors.backgroundDark,
-          // ✅ [핵심] Separator 대신 Border를 사용
           border: showDivider
               ? const Border(
                   bottom: BorderSide(color: AppColors.borderLight, width: 1.0),
@@ -100,8 +99,6 @@ class WatchlistTile extends StatelessWidget {
                 ],
               ),
             ),
-
-            // ✅ 수정됨: 독립 위젯 + RepaintBoundary 적용
             _buildEditButton(context),
           ],
         ),

@@ -14,7 +14,7 @@ import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.d
 
 import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/stock_detail_app_bar.dart';
 import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/section_nav_bar.dart';
-import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/detail_sections.dart';
+import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/section_widget.dart';
 import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/price_section.dart';
 import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/input_section.dart';
 import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/section_detector.dart';

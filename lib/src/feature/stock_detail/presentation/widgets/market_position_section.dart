@@ -3,7 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:lucy_assignment/src/core/design_system/design_system.dart';
 import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart';
 import 'package:lucy_assignment/src/core/utils/parsers.dart';
-import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/detail_sections.dart';
+import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/section_widget.dart';
 
 class MarketPositionSection extends StatelessWidget {
   final int rank;
@@ -37,21 +37,20 @@ class MarketPositionSection extends StatelessWidget {
   }
 
   Widget _buildRankCard(BuildContext context, int rank) {
-    // 1~3위는 특별한 색상 적용 (아이콘/텍스트 색상만 유지, 배경은 카드 스타일로 통일)
     Color contentColor;
     IconData icon;
 
     switch (rank) {
       case 1:
-        contentColor = const Color(0xFFFFB800); // 금색
-        icon = Icons.emoji_events; // 트로피
+        contentColor = const Color(0xFFFFB800);
+        icon = Icons.emoji_events;
         break;
       case 2:
-        contentColor = const Color(0xFF9E9E9E); // 은색
+        contentColor = const Color(0xFF9E9E9E);
         icon = Icons.emoji_events_outlined;
         break;
       case 3:
-        contentColor = const Color(0xFFCD7F32); // 동색
+        contentColor = const Color(0xFFCD7F32);
         icon = Icons.emoji_events_outlined;
         break;
       default:
@@ -125,7 +124,6 @@ class MarketPositionSection extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // 원형 차트 (CustomPaint 대신 간단히 CircularProgressIndicator 사용)
           SizedBox(
             height: 48,
             width: 48,

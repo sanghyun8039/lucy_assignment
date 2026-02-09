@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:lucy_assignment/src/core/network/socket/socket_client.dart';
 import 'package:lucy_assignment/src/feature/stock/data/models/socket/stock_socket_message.dart';
 
@@ -34,7 +35,7 @@ class StockRealtimeDataSourceImpl implements StockRealtimeDataSource {
             final message = StockSocketMessage.fromJson(json);
             sink.add(message);
           } catch (e) {
-            print('Error parsing socket message: $e');
+            debugPrint('Error parsing socket message: $e');
           }
         },
       ),

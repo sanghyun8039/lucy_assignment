@@ -17,18 +17,15 @@ class StockPriceWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Selector나 Provider에서 전체 스트림을 가져와 필터링
     final stockStream = context.read<WatchlistProvider>().getStockStream(
       stockCode,
     );
     return StreamBuilder<StockEntity>(
-      // ✅ 최적화 1: distinct()를 추가하여 동일한 가격 데이터 수신 시 리빌드 방지
       stream: stockStream,
       initialData: initialStock,
       builder: (context, snapshot) {
         final realtimeStock = snapshot.data;
 
-        // 데이터 병합 로직
         final stock =
             initialStock?.copyWith(
               currentPrice:
@@ -60,7 +57,6 @@ class StockPriceWidget extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
                 color: priceColor,
-                // ✅ 최적화 2: 고정폭 숫자(Tabular Figures) 적용 -> 레이아웃 떨림 방지
                 fontFeatures: [const FontFeature.tabularFigures()],
               ),
             ),
@@ -86,7 +82,6 @@ class StockPriceWidget extends StatelessWidget {
                     color: priceColor,
                     fontWeight: FontWeight.w500,
                     fontSize: 12,
-                    // ✅ 최적화 2: 고정폭 숫자 적용
                     fontFeatures: [const FontFeature.tabularFigures()],
                   ),
                 ),
