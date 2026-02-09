@@ -56,7 +56,6 @@ class MyApp extends StatelessWidget {
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context, child) {
-          // Access SettingsProvider
           final settings = context.watch<SettingsProvider>();
 
           return MaterialApp.router(

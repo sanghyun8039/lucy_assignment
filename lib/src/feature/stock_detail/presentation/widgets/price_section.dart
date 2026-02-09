@@ -51,22 +51,24 @@ class _PriceSectionState extends State<PriceSection>
 
     _subscription = widget.priceStream.listen((message) {
       if (!mounted) return;
-      setState(() {
-        _currentPrice = message.currentPrice;
-        _changeRate = message.changeRate;
+      if (message is StockSocketMessagePriceUpdate) {
+        setState(() {
+          _currentPrice = message.currentPrice;
+          _changeRate = message.changeRate;
 
-        _xValue += 1;
-        _spots.add(FlSpot(_xValue, _currentPrice));
-        _timestamps.add(message.timestamp);
+          _xValue += 1;
+          _spots.add(FlSpot(_xValue, _currentPrice));
+          _timestamps.add(message.timestamp);
 
-        // Keep a window of data points (e.g., last 50) to keep chart moving
-        if (_spots.length > 50) {
-          _spots.removeAt(0);
-          if (_timestamps.isNotEmpty) {
-            _timestamps.removeAt(0);
+          // Keep a window of data points (e.g., last 50) to keep chart moving
+          if (_spots.length > 50) {
+            _spots.removeAt(0);
+            if (_timestamps.isNotEmpty) {
+              _timestamps.removeAt(0);
+            }
           }
-        }
-      });
+        });
+      }
     });
   }
 

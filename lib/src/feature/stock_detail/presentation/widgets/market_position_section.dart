@@ -135,7 +135,9 @@ class MarketPositionSection extends StatelessWidget {
                 CircularProgressIndicator(
                   value: Parsers.parseDoubleToPercent(weight),
                   strokeWidth: 6,
-                  backgroundColor: AppColors.textSecondary.withOpacity(0.1),
+                  backgroundColor: AppColors.textSecondary.withValues(
+                    alpha: 0.1,
+                  ),
                   valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
                   strokeCap: StrokeCap.round,
                 ),
@@ -144,7 +146,7 @@ class MarketPositionSection extends StatelessWidget {
                     "$weight%",
                     style: AppTypography.labelSmall.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
+                      color: AppColors.primary.withValues(alpha: 0.2),
                     ),
                   ),
                 ),

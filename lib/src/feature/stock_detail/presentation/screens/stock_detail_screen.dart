@@ -8,7 +8,8 @@ import 'package:lucy_assignment/src/feature/watchlist/presentation/providers/wat
 import 'package:provider/provider.dart';
 
 import 'package:lucy_assignment/src/core/di/service_locator.dart';
-import 'package:lucy_assignment/src/feature/stock/data/datasources/socket/stock_socket_manager.dart';
+import 'package:lucy_assignment/src/feature/stock/data/datasources/realtime/stock_realtime_datasource.dart';
+import 'package:lucy_assignment/src/feature/stock/data/models/socket/stock_socket_message.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 
 import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/stock_detail_app_bar.dart';
@@ -32,13 +33,13 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
   final List<GlobalKey> _sectionKeys = List.generate(6, (_) => GlobalKey());
 
   late StockEntity _stock;
-  late final StockSocketManager _socketManager;
+  late final StockRealtimeDataSource _realtimeDataSource;
   String? _subscribedStockCode;
 
   @override
   void initState() {
     super.initState();
-    _socketManager = sl<StockSocketManager>();
+    _realtimeDataSource = sl<StockRealtimeDataSource>();
   }
 
   @override
@@ -63,9 +64,9 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
 
     if (_stock.stockCode != _subscribedStockCode) {
       if (_subscribedStockCode != null) {
-        _socketManager.unsubscribeFromStock(_subscribedStockCode!);
+        _realtimeDataSource.unsubscribeFromStock(_subscribedStockCode!);
       }
-      _socketManager.subscribeToStock(
+      _realtimeDataSource.subscribeToStock(
         _stock.stockCode,
         _stock.currentPrice.toDouble(),
       );
@@ -75,7 +76,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
 
   @override
   void dispose() {
-    _socketManager.unsubscribeFromStock(_stock.stockCode);
+    _realtimeDataSource.unsubscribeFromStock(_stock.stockCode);
     _scrollController.dispose();
     super.dispose();
   }
@@ -129,9 +130,12 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                           key: _sectionKeys[0],
                           child: PriceSection(
                             initialStock: _stock,
-                            priceStream: _socketManager.messageStream.where(
-                              (m) => m.stockCode == _stock.stockCode,
-                            ),
+                            priceStream: _realtimeDataSource.messageStream
+                                .where(
+                                  (m) =>
+                                      m is StockSocketMessagePriceUpdate &&
+                                      m.stockCode == _stock.stockCode,
+                                ),
                           ),
                         ),
                       ),

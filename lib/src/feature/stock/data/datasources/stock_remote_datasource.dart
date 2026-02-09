@@ -5,7 +5,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:lucy_assignment/src/feature/stock/data/datasources/stock_local_datasource.dart';
 import 'package:lucy_assignment/src/feature/stock/data/models/stock_model.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
-import 'package:lucy_assignment/src/feature/stock/data/datasources/socket/stock_socket_manager.dart';
+import 'package:lucy_assignment/src/feature/stock/data/datasources/realtime/stock_realtime_datasource.dart';
 import 'package:lucy_assignment/src/feature/stock/data/models/socket/stock_socket_message.dart';
 
 abstract class StockRemoteDataSource {
@@ -15,7 +15,7 @@ abstract class StockRemoteDataSource {
 
 class MockStockRemoteDataSource implements StockRemoteDataSource {
   final StockLocalDataSource _localDataSource;
-  final StockSocketManager _socketManager;
+  final StockRealtimeDataSource _realtimeDataSource;
 
   // 감시 대상 종목 관리
   final BehaviorSubject<List<String>> _watchedStocksSubject =
@@ -30,14 +30,14 @@ class MockStockRemoteDataSource implements StockRemoteDataSource {
 
   MockStockRemoteDataSource({
     required StockLocalDataSource localDataSource,
-    required StockSocketManager socketManager,
+    required StockRealtimeDataSource realtimeDataSource,
   }) : _localDataSource = localDataSource,
-       _socketManager = socketManager {
+       _realtimeDataSource = realtimeDataSource {
     _init();
   }
 
   void _init() async {
-    _socketManager.connect();
+    _realtimeDataSource.connect();
 
     // 1. 로컬 데이터 미리 로드 (캐싱)
     try {
@@ -66,7 +66,7 @@ class MockStockRemoteDataSource implements StockRemoteDataSource {
     // 제거해야 할 것들 (현재 구독 중 - 원하는 목록)
     final toUnsubscribe = _activeSocketSubscriptions.difference(desiredSet);
     for (var code in toUnsubscribe) {
-      _socketManager.unsubscribeFromStock(code);
+      _realtimeDataSource.unsubscribeFromStock(code);
       _activeSocketSubscriptions.remove(code);
     }
 
@@ -87,7 +87,7 @@ class MockStockRemoteDataSource implements StockRemoteDataSource {
       );
 
       if (stock.stockCode.isNotEmpty) {
-        _socketManager.subscribeToStock(
+        _realtimeDataSource.subscribeToStock(
           stock.stockCode,
           stock.currentPrice.toDouble(),
         );
@@ -103,14 +103,14 @@ class MockStockRemoteDataSource implements StockRemoteDataSource {
 
   @override
   Stream<StockEntity> getPriceStream() {
-    // ✅ 수정됨: 불필요한 객체 생성 제거 및 타입 안전성 확보
-    return _socketManager.messageStream
+    return _realtimeDataSource.messageStream
         // 1. 타입 필터링을 먼저 수행 (GC 부하 감소)
         .whereType<StockSocketMessagePriceUpdate>()
         // 2. 필요한 데이터만 변환
         .map((message) {
           return StockEntity(
-            type: message.type,
+            type:
+                'stock', // Message doesn't have type field anymore, defaulting
             stockCode: message.stockCode,
             currentPrice: message.currentPrice.toInt(),
             changeRate: message.changeRate,
