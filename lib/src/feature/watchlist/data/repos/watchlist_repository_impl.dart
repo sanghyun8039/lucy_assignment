@@ -3,6 +3,7 @@ import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.d
 import 'package:lucy_assignment/src/feature/watchlist/data/datasources/watchlist_local_datasource.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_item.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/repos/watchlist_repository.dart';
+import 'package:rxdart/rxdart.dart';
 
 class WatchlistRepositoryImpl implements WatchlistRepository {
   final WatchlistLocalDataSource _localDataSource;
@@ -12,9 +13,11 @@ class WatchlistRepositoryImpl implements WatchlistRepository {
     required WatchlistLocalDataSource localDataSource,
     required StockRemoteDataSource remoteDataSource,
   }) : _localDataSource = localDataSource,
-       _remoteDataSource = remoteDataSource {
-    // Watchlist 변경 감지하여 RemoteDataSource에 구독 리스트 업데이트
-    _localDataSource.watchWatchlist().listen((list) {
+       _remoteDataSource = remoteDataSource;
+
+  @override
+  Stream<List<WatchlistItem>> getWatchlistStream() {
+    return _localDataSource.watchWatchlist().doOnData((list) {
       final codes = list.map((e) => e.stockCode).toList();
       _remoteDataSource.setWatchedStocks(codes);
     });
@@ -28,11 +31,6 @@ class WatchlistRepositoryImpl implements WatchlistRepository {
   @override
   Stream<StockEntity> getPriceStream() {
     return _remoteDataSource.getPriceStream();
-  }
-
-  @override
-  Stream<List<WatchlistItem>> getWatchlistStream() {
-    return _localDataSource.watchWatchlist();
   }
 
   @override

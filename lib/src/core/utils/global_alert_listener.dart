@@ -6,6 +6,8 @@ import 'package:lucy_assignment/src/core/design_system/colors.dart';
 import 'package:lucy_assignment/src/core/design_system/typography.dart';
 import 'package:lucy_assignment/src/core/constants/alert_type.dart';
 import 'package:lucy_assignment/src/feature/watchlist/presentation/providers/watchlist_provider.dart';
+import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart';
+import 'package:lucy_assignment/src/core/utils/formatters/app_formatters.dart';
 
 class GlobalAlertListener extends StatefulWidget {
   final Widget child;
@@ -93,7 +95,7 @@ class _GlobalAlertListenerState extends State<GlobalAlertListener>
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      event.message,
+                      "${event.stockName} ${context.l10n.targetPriceReached} (${AppFormatters.comma.format(event.targetPrice)} KRW ${event.type == AlertType.upper ? context.l10n.above : context.l10n.below})",
                       style: AppTypography.bodyMedium.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

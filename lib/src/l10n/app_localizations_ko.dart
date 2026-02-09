@@ -60,6 +60,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get bidir => '양방향';
 
   @override
+  String get targetPriceReached => '목표가 도달!';
+
+  @override
+  String get above => '이상';
+
+  @override
+  String get below => '이하';
+
+  @override
   String get addToWatchlist => '관심종목 추가';
 
   @override

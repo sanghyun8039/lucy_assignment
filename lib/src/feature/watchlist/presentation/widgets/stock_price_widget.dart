@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:lucy_assignment/src/core/design_system/design_system.dart';
+import 'package:lucy_assignment/src/core/utils/formatters/app_formatters.dart';
 import 'package:lucy_assignment/src/feature/watchlist/presentation/providers/watchlist_provider.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 import 'package:provider/provider.dart';
@@ -51,13 +51,11 @@ class StockPriceWidget extends StatelessWidget {
             ? AppColors.growth2
             : (isFalling ? AppColors.decline2 : AppColors.textSecondary);
 
-        final currencyFormat = NumberFormat("#,###");
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '${currencyFormat.format(currentPrice)} KRW',
+              '${AppFormatters.comma.format(currentPrice)} KRW',
               style: AppTypography.bodyLarge.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -100,3 +98,5 @@ class StockPriceWidget extends StatelessWidget {
     );
   }
 }
+
+class AppFormat {}

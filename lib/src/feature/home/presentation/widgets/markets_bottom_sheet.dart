@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:lucy_assignment/src/core/utils/formatters/app_formatters.dart';
 import 'package:provider/provider.dart';
 import 'package:lucy_assignment/src/feature/watchlist/presentation/providers/watchlist_provider.dart';
 import 'package:lucy_assignment/src/core/constants/alert_type.dart';
@@ -33,7 +33,7 @@ class _MarketsBottomSheetState extends State<MarketsBottomSheet> {
     final initialPrice = widget.existingItem?.targetPrice;
     _targetPriceController = TextEditingController(
       text: initialPrice != null
-          ? NumberFormat("#,###").format(initialPrice)
+          ? AppFormatters.comma.format(initialPrice)
           : '',
     );
     _selectedType = widget.existingItem?.alertType ?? AlertType.upper;
@@ -88,7 +88,7 @@ class _MarketsBottomSheetState extends State<MarketsBottomSheet> {
               // Header
               MarketsBottomSheetHeader(stock: widget.stock),
               // Price Info Card
-              PriceInfoCard(stock: widget.stock),
+              PriceInfoCard(stock: widget.stock, isEditMode: isEditMode),
 
               const SizedBox(height: 24),
 

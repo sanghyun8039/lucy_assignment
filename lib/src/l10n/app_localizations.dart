@@ -200,6 +200,24 @@ abstract class AppLocalizations {
   /// **'Bidir.'**
   String get bidir;
 
+  /// No description provided for @targetPriceReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Price Reached!'**
+  String get targetPriceReached;
+
+  /// No description provided for @above.
+  ///
+  /// In en, this message translates to:
+  /// **'Above'**
+  String get above;
+
+  /// No description provided for @below.
+  ///
+  /// In en, this message translates to:
+  /// **'Below'**
+  String get below;
+
   /// No description provided for @addToWatchlist.
   ///
   /// In en, this message translates to:

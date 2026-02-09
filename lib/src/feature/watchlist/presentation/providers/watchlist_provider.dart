@@ -9,40 +9,48 @@ import 'package:lucy_assignment/src/feature/watchlist/domain/usecases/remove_wat
 import 'package:lucy_assignment/src/feature/watchlist/domain/usecases/get_price_stream_usecase.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/usecases/get_stock_usecase.dart';
-import 'package:lucy_assignment/src/core/utils/formatters/app_formatters.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AlertEvent {
-  final String message;
+  final String stockName;
+  final int targetPrice;
   final AlertType type;
+  final String stockCode;
 
-  AlertEvent(this.message, this.type);
+  AlertEvent({
+    required this.stockName,
+    required this.targetPrice,
+    required this.type,
+    required this.stockCode,
+  });
 }
 
 class WatchlistProvider extends ChangeNotifier {
+  // UseCases
   final GetWatchStreamUseCase _getWatchStreamUseCase;
   final AddWatchlistItemUseCase _addWatchlistItemUseCase;
   final RemoveWatchlistItemUseCase _removeWatchlistItemUseCase;
   final GetPriceStreamUseCase _getPriceStreamUseCase;
   final GetStockUseCase _getStockUseCase;
 
-  StreamSubscription<List<WatchlistItem>>? _watchlistSubscription;
-  StreamSubscription<StockEntity>? _priceSubscription;
+  // ✅ RxDart: 모든 구독을 한 번에 관리하는 가방
+  final CompositeSubscription _subscriptions = CompositeSubscription();
 
+  // State
   List<WatchlistItem> _watchlist = [];
   final Set<String> _watchedStockCodes = {};
-
-  final _alertController = StreamController<AlertEvent>.broadcast();
-  Stream<AlertEvent> get alertStream => _alertController.stream;
+  final Map<String, StockEntity> _priceMap = {};
   final Set<String> _alertedConditions = {};
 
-  final Map<String, StockEntity> _priceMap = {};
+  // Controllers & Streams
+  final _alertController = StreamController<AlertEvent>.broadcast();
+  Stream<AlertEvent> get alertStream => _alertController.stream;
+
+  // O(1) 성능을 위한 직접 배송용 컨트롤러들
   final Map<String, StreamController<StockEntity>> _stockControllers = {};
   final Map<String, Stream<StockEntity>> _throttledStreams = {};
 
-  // Broadcast stream for price updates
-  final _priceStreamController = StreamController<StockEntity>.broadcast();
-  Stream<StockEntity> get priceStream => _priceStreamController.stream;
+  // 생성자
   WatchlistProvider({
     required GetWatchStreamUseCase getWatchStreamUseCase,
     required AddWatchlistItemUseCase addWatchlistItemUseCase,
@@ -58,47 +66,132 @@ class WatchlistProvider extends ChangeNotifier {
   }
 
   void _init() {
-    _watchlistSubscription = _getWatchStreamUseCase().listen((watchlist) async {
-      _watchlist = watchlist;
-      _watchedStockCodes.clear();
-      _watchedStockCodes.addAll(watchlist.map((item) => item.stockCode));
+    // 1. 관심 목록 관리 (Watchlist Stream)
+    _getWatchStreamUseCase()
+        .listen((watchlist) {
+          _watchlist = watchlist;
+          _watchedStockCodes.clear();
+          _watchedStockCodes.addAll(watchlist.map((item) => item.stockCode));
 
-      // Fetch initial data for items not in priceMap
-      for (var item in watchlist) {
-        if (!_priceMap.containsKey(item.stockCode)) {
-          final stock = await _getStockUseCase(item.stockCode);
-          if (stock != null) {
-            _priceMap[item.stockCode] = stock;
-          }
-        }
-      }
+          // 초기 데이터 로딩 (필요한 경우만)
+          _fetchMissingInitialData(watchlist);
 
-      notifyListeners();
-    });
+          notifyListeners();
+        })
+        .addTo(_subscriptions); // ✅ 구독 가방에 담기
 
-    _priceSubscription = _getPriceStreamUseCase().listen((priceUpdate) {
-      final existingStock = _priceMap[priceUpdate.stockCode];
+    // 2. 가격 데이터 처리 파이프라인 (Price Stream Pipeline)
+    // RxDart를 사용하여 로직을 단계별로 분리
+    final priceStream = _getPriceStreamUseCase().asBroadcastStream();
 
-      final StockEntity mergedStock;
-      if (existingStock != null) {
-        // Merge dynamic data into existing static data
-        mergedStock = existingStock.copyWith(
+    priceStream
+        .doOnData(_updateLocalState) // 2-1. 로컬 상태(_priceMap) 업데이트
+        .doOnData(_dispatchToIndividual) // 2-2. 개별 종목 컨트롤러로 배송
+        .listen(null) // 그냥 흐르게 둠 (데이터 소비)
+        .addTo(_subscriptions);
+
+    // 3. 알림 로직 분리 (Alert Stream) - 여기가 핵심!
+    // 가격이 들어올 때마다(trigger), 최신 관심목록(reference)을 참조하여 알림 생성
+    priceStream
+        .withLatestFrom<List<WatchlistItem>, List<AlertEvent>>(
+          _getWatchStreamUseCase(), // 관심 목록 스트림 참조
+          (price, watchlist) => _generateAlerts(price, watchlist),
+        )
+        .expand((events) => events) // List<AlertEvent> -> 개별 Event로 풀기
+        .listen((event) {
+          _alertController.add(event); // 최종적으로 알림 발송
+        })
+        .addTo(_subscriptions);
+  }
+  // --- Helper Methods (로직 분리) ---
+
+  // 2-1. 상태 업데이트 (Side Effect)
+  void _updateLocalState(StockEntity priceUpdate) {
+    final existingStock = _priceMap[priceUpdate.stockCode];
+    final mergedStock =
+        existingStock?.copyWith(
           currentPrice: priceUpdate.currentPrice,
           changeRate: priceUpdate.changeRate,
           timestamp: priceUpdate.timestamp,
-        );
-      } else {
-        mergedStock = priceUpdate;
+        ) ??
+        priceUpdate;
+    _priceMap[mergedStock.stockCode] = mergedStock;
+  }
+
+  // 2-2. 개별 배송 (O(1) Dispatch)
+  void _dispatchToIndividual(StockEntity priceUpdate) {
+    // 맵에 이미 업데이트된 데이터가 있으므로 그걸 가져옴 (Merge된 데이터)
+    final mergedData = _priceMap[priceUpdate.stockCode]!;
+
+    if (_stockControllers.containsKey(mergedData.stockCode)) {
+      _stockControllers[mergedData.stockCode]!.add(mergedData);
+    }
+  }
+
+  // 3. 알림 생성 로직 (Pure Function에 가까움)
+  List<AlertEvent> _generateAlerts(
+    StockEntity stock,
+    List<WatchlistItem> watchlist,
+  ) {
+    final events = <AlertEvent>[];
+    // 해당 종목의 관심 항목 찾기 (여러 개일 수도 있다고 가정)
+    final items = watchlist.where((item) => item.stockCode == stock.stockCode);
+
+    for (var item in items) {
+      if (item.targetPrice == null) continue;
+
+      bool trigger = false;
+      AlertType effectiveType = item.alertType;
+      final target = item.targetPrice!;
+      final current = stock.currentPrice;
+
+      // ... (기존 알림 조건 비교 로직 동일) ...
+      if (item.alertType == AlertType.upper && current >= target) {
+        trigger = true;
+      } else if (item.alertType == AlertType.lower && current <= target) {
+        trigger = true;
+      } else if (item.alertType == AlertType.bidir) {
+        if (current >= target) {
+          trigger = true;
+          effectiveType = AlertType.upper;
+        } else if (current <= target) {
+          trigger = true;
+          effectiveType = AlertType.lower;
+        }
       }
 
-      _priceMap[mergedStock.stockCode] = mergedStock;
-      _checkAlerts(mergedStock);
-      // ✅ 변경 2: 전체 방송 대신, 해당 종목을 듣고 있는 컨트롤러에만 쏙 넣어줍니다.
-      // 리스너가 없는 종목의 업데이트는 무시되어 성능이 절약됩니다.
-      if (_stockControllers.containsKey(mergedStock.stockCode)) {
-        _stockControllers[mergedStock.stockCode]!.add(mergedStock);
+      final alertKey = "${item.stockCode}_${target}_${item.alertType}";
+
+      if (trigger) {
+        if (!_alertedConditions.contains(alertKey)) {
+          _alertedConditions.add(alertKey);
+          events.add(
+            AlertEvent(
+              stockName: stock.stockName ?? stock.stockCode,
+              targetPrice: target,
+              type: effectiveType,
+              stockCode: stock.stockCode,
+            ),
+          );
+        }
+      } else {
+        _alertedConditions.remove(alertKey);
       }
-    });
+    }
+    return events;
+  }
+
+  Future<void> _fetchMissingInitialData(List<WatchlistItem> watchlist) async {
+    for (var item in watchlist) {
+      if (!_priceMap.containsKey(item.stockCode)) {
+        final stock = await _getStockUseCase(item.stockCode);
+        if (stock != null) {
+          _priceMap[item.stockCode] = stock;
+        }
+      }
+    }
+    // 데이터가 늦게 로딩되면 화면 갱신 필요
+    notifyListeners();
   }
 
   Stream<StockEntity> getStockStream(String stockCode) {
@@ -171,11 +264,12 @@ class WatchlistProvider extends ChangeNotifier {
         if (!_alertedConditions.contains(alertKey)) {
           _alertedConditions.add(alertKey);
 
-          final directionText = effectiveType == AlertType.upper ? '이상' : '이하';
           _alertController.add(
             AlertEvent(
-              '${stock.stockName ?? stock.stockCode} 목표가 도달! ($directionText ${AppFormatters.comma.format(target)} KRW)',
-              effectiveType,
+              stockName: stock.stockName ?? stock.stockCode,
+              targetPrice: target,
+              type: effectiveType,
+              stockCode: stock.stockCode,
             ),
           );
         }
@@ -191,14 +285,16 @@ class WatchlistProvider extends ChangeNotifier {
 
   @override
   void dispose() {
+    // ✅ RxDart: 가방만 비우면 모든 구독이 취소됨
+    _subscriptions.dispose();
+
+    // 컨트롤러 정리
     for (var controller in _stockControllers.values) {
       controller.close();
     }
     _stockControllers.clear();
-    _watchlistSubscription?.cancel();
-    _priceSubscription?.cancel();
     _alertController.close();
-    _throttledStreams.clear(); // 캐시도 비움
+    _throttledStreams.clear();
     super.dispose();
   }
 

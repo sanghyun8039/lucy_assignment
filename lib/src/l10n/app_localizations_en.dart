@@ -60,6 +60,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bidir => 'Bidir.';
 
   @override
+  String get targetPriceReached => 'Target Price Reached!';
+
+  @override
+  String get above => 'Above';
+
+  @override
+  String get below => 'Below';
+
+  @override
   String get addToWatchlist => 'Add to Watchlist';
 
   @override
