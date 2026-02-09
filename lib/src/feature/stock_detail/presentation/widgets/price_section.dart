@@ -8,7 +8,7 @@ import 'package:lucy_assignment/src/core/design_system/design_system.dart';
 import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart';
 import 'package:lucy_assignment/src/feature/stock/data/models/socket/stock_socket_message.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
-import 'package:lucy_assignment/src/core/utils/app_formatters.dart';
+import 'package:lucy_assignment/src/core/utils/formatters/app_formatters.dart';
 
 class PriceSection extends StatefulWidget {
   final StockEntity initialStock;

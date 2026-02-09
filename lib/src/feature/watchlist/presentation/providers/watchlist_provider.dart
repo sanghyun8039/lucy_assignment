@@ -9,7 +9,7 @@ import 'package:lucy_assignment/src/feature/watchlist/domain/usecases/remove_wat
 import 'package:lucy_assignment/src/feature/watchlist/domain/usecases/get_price_stream_usecase.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/usecases/get_stock_usecase.dart';
-import 'package:lucy_assignment/src/core/utils/app_formatters.dart';
+import 'package:lucy_assignment/src/core/utils/formatters/app_formatters.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AlertEvent {

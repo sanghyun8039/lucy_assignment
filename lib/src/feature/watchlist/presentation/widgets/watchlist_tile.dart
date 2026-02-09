@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucy_assignment/src/core/constants/alert_type.dart';
-import 'package:lucy_assignment/src/core/utils/app_formatters.dart';
+import 'package:lucy_assignment/src/core/utils/formatters/app_formatters.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_item.dart';
 import 'package:lucy_assignment/src/feature/watchlist/presentation/widgets/stock_price_widget.dart';
