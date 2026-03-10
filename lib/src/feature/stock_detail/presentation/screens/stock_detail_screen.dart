@@ -7,11 +7,7 @@ import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/su
 import 'package:lucy_assignment/src/feature/watchlist/presentation/providers/watchlist_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'package:lucy_assignment/src/core/di/service_locator.dart';
-import 'package:lucy_assignment/src/feature/stock/data/datasources/realtime/stock_realtime_datasource.dart';
-import 'package:lucy_assignment/src/feature/stock/data/models/socket/stock_socket_message.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
-
 import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/stock_detail_app_bar.dart';
 import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/section_nav_bar.dart';
 import 'package:lucy_assignment/src/feature/stock_detail/presentation/widgets/section_widget.dart';
@@ -33,14 +29,6 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
   final List<GlobalKey> _sectionKeys = List.generate(6, (_) => GlobalKey());
 
   late StockEntity _stock;
-  late final StockRealtimeDataSource _realtimeDataSource;
-  String? _subscribedStockCode;
-
-  @override
-  void initState() {
-    super.initState();
-    _realtimeDataSource = sl<StockRealtimeDataSource>();
-  }
 
   @override
   void didChangeDependencies() {
@@ -50,7 +38,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
 
     final cachedStock = context.read<WatchlistProvider>().getPrice(stockCode);
 
-    final newStock =
+    _stock =
         cachedStock ??
         StockEntity(
           stockCode: stockCode,
@@ -59,24 +47,10 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
           changeRate: 0,
           timestamp: DateTime.now(),
         );
-
-    _stock = newStock;
-
-    if (_stock.stockCode != _subscribedStockCode) {
-      if (_subscribedStockCode != null) {
-        _realtimeDataSource.unsubscribeFromStock(_subscribedStockCode!);
-      }
-      _realtimeDataSource.subscribeToStock(
-        _stock.stockCode,
-        _stock.currentPrice.toDouble(),
-      );
-      _subscribedStockCode = _stock.stockCode;
-    }
   }
 
   @override
   void dispose() {
-    _realtimeDataSource.unsubscribeFromStock(_stock.stockCode);
     _scrollController.dispose();
     super.dispose();
   }
@@ -130,12 +104,9 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                           key: _sectionKeys[0],
                           child: PriceSection(
                             initialStock: _stock,
-                            priceStream: _realtimeDataSource.messageStream
-                                .where(
-                                  (m) =>
-                                      m is StockSocketMessagePriceUpdate &&
-                                      m.stockCode == _stock.stockCode,
-                                ),
+                            priceStream: context
+                                .read<WatchlistProvider>()
+                                .getStockStream(_stock.stockCode),
                           ),
                         ),
                       ),

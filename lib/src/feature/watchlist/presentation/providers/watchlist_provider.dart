@@ -8,6 +8,7 @@ import 'package:lucy_assignment/src/feature/watchlist/domain/usecases/get_watch_
 import 'package:lucy_assignment/src/feature/watchlist/domain/usecases/remove_watchlist_item_usecase.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/usecases/get_price_stream_usecase.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
+import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_price_update.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/usecases/get_stock_usecase.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -81,19 +82,24 @@ class WatchlistProvider extends ChangeNotifier {
         .addTo(_subscriptions);
   }
 
-  void _updateLocalState(StockEntity priceUpdate) {
+  void _updateLocalState(StockPriceUpdate priceUpdate) {
     final existingStock = _priceMap[priceUpdate.stockCode];
     final mergedStock =
         existingStock?.copyWith(
-          currentPrice: priceUpdate.currentPrice,
+          currentPrice: priceUpdate.currentPrice.toInt(),
           changeRate: priceUpdate.changeRate,
           timestamp: priceUpdate.timestamp,
         ) ??
-        priceUpdate;
+        StockEntity(
+          stockCode: priceUpdate.stockCode,
+          currentPrice: priceUpdate.currentPrice.toInt(),
+          changeRate: priceUpdate.changeRate,
+          timestamp: priceUpdate.timestamp,
+        );
     _priceMap[mergedStock.stockCode] = mergedStock;
   }
 
-  void _dispatchToIndividual(StockEntity priceUpdate) {
+  void _dispatchToIndividual(StockPriceUpdate priceUpdate) {
     final mergedData = _priceMap[priceUpdate.stockCode]!;
 
     if (_stockControllers.containsKey(mergedData.stockCode)) {
@@ -102,15 +108,14 @@ class WatchlistProvider extends ChangeNotifier {
   }
 
   List<AlertEvent> _generateAlerts(
-    StockEntity stock,
+    StockPriceUpdate stock,
     List<WatchlistItem> watchlist,
   ) {
     final events = <AlertEvent>[];
     final items = watchlist.where((item) => item.stockCode == stock.stockCode);
 
     final cachedStock = _priceMap[stock.stockCode];
-    final stockName =
-        cachedStock?.stockName ?? stock.stockName ?? stock.stockCode;
+    final stockName = cachedStock?.stockName ?? stock.stockCode;
 
     for (var item in items) {
       if (item.targetPrice == null) continue;

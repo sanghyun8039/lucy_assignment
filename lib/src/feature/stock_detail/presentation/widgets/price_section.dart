@@ -6,13 +6,12 @@ import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:lucy_assignment/src/core/design_system/design_system.dart';
 import 'package:lucy_assignment/src/core/utils/extensions/context_extension.dart';
-import 'package:lucy_assignment/src/feature/stock/data/models/socket/stock_socket_message.dart';
 import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 import 'package:lucy_assignment/src/core/utils/formatters/app_formatters.dart';
 
 class PriceSection extends StatefulWidget {
   final StockEntity initialStock;
-  final Stream<StockSocketMessage> priceStream;
+  final Stream<StockEntity> priceStream;
 
   const PriceSection({
     super.key,
@@ -28,7 +27,7 @@ class _PriceSectionState extends State<PriceSection>
     with AutomaticKeepAliveClientMixin {
   final List<FlSpot> _spots = [];
   final List<DateTime> _timestamps = [];
-  late StreamSubscription<StockSocketMessage> _subscription;
+  late StreamSubscription<StockEntity> _subscription;
 
   double _currentPrice = 0;
   double _changeRate = 0;
@@ -49,26 +48,24 @@ class _PriceSectionState extends State<PriceSection>
     _spots.add(FlSpot(_xValue, _currentPrice));
     _timestamps.add(widget.initialStock.timestamp ?? DateTime.now());
 
-    _subscription = widget.priceStream.listen((message) {
+    _subscription = widget.priceStream.listen((entity) {
       if (!mounted) return;
-      if (message is StockSocketMessagePriceUpdate) {
-        setState(() {
-          _currentPrice = message.currentPrice;
-          _changeRate = message.changeRate;
+      setState(() {
+        _currentPrice = entity.currentPrice.toDouble();
+        _changeRate = entity.changeRate;
 
-          _xValue += 1;
-          _spots.add(FlSpot(_xValue, _currentPrice));
-          _timestamps.add(message.timestamp);
+        _xValue += 1;
+        _spots.add(FlSpot(_xValue, _currentPrice));
+        _timestamps.add(entity.timestamp ?? DateTime.now());
 
-          // Keep a window of data points (e.g., last 50) to keep chart moving
-          if (_spots.length > 50) {
-            _spots.removeAt(0);
-            if (_timestamps.isNotEmpty) {
-              _timestamps.removeAt(0);
-            }
+        // Keep a window of data points (e.g., last 50) to keep chart moving
+        if (_spots.length > 50) {
+          _spots.removeAt(0);
+          if (_timestamps.isNotEmpty) {
+            _timestamps.removeAt(0);
           }
-        });
-      }
+        }
+      });
     });
   }
 

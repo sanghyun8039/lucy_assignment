@@ -1,4 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:lucy_assignment/src/feature/watchlist/data/models/watchlist_model.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_item.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -11,13 +12,13 @@ abstract class WatchlistLocalDataSource {
 }
 
 class WatchlistLocalDataSourceImpl implements WatchlistLocalDataSource {
-  final Box<WatchlistItem> _box;
+  final Box<WatchlistModel> _box;
 
   WatchlistLocalDataSourceImpl(this._box);
 
   @override
   Future<void> addWatchlistItem(WatchlistItem item) async {
-    await _box.put(item.stockCode, item);
+    await _box.put(item.stockCode, WatchlistModel.fromEntity(item));
   }
 
   @override
@@ -27,12 +28,12 @@ class WatchlistLocalDataSourceImpl implements WatchlistLocalDataSource {
 
   @override
   Future<void> updateWatchlistItem(WatchlistItem item) async {
-    await _box.put(item.stockCode, item);
+    await _box.put(item.stockCode, WatchlistModel.fromEntity(item));
   }
 
   @override
   List<WatchlistItem> getWatchlist() {
-    return _box.values.toList();
+    return _box.values.map((m) => m.toEntity()).toList();
   }
 
   @override

@@ -1,4 +1,4 @@
-import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
+import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_price_update.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_item.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/repos/watchlist_repository.dart';
 import 'package:rxdart/rxdart.dart';
@@ -9,10 +9,10 @@ class GetPriceStreamUseCase {
   GetPriceStreamUseCase({required WatchlistRepository watchlistRepository})
     : _watchlistRepository = watchlistRepository;
 
-  Stream<StockEntity> call() {
+  Stream<StockPriceUpdate> call() {
     return _watchlistRepository
         .getPriceStream()
-        .withLatestFrom<List<WatchlistItem>, StockEntity?>(
+        .withLatestFrom<List<WatchlistItem>, StockPriceUpdate?>(
           _watchlistRepository.getWatchlistStream(),
           (priceUpdate, watchlist) {
             final isWatched = watchlist.any(

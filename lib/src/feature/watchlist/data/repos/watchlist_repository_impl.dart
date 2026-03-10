@@ -1,5 +1,6 @@
 import 'package:lucy_assignment/src/feature/stock/data/datasources/stock_remote_datasource.dart';
-import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
+import 'package:lucy_assignment/src/feature/stock/data/models/socket/stock_socket_message.dart';
+import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_price_update.dart';
 import 'package:lucy_assignment/src/feature/watchlist/data/datasources/watchlist_local_datasource.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_item.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/repos/watchlist_repository.dart';
@@ -24,13 +25,22 @@ class WatchlistRepositoryImpl implements WatchlistRepository {
   }
 
   @override
-  Future<void> addWatchlistItem(WatchlistItem item) {
-    return _localDataSource.addWatchlistItem(item);
+  Stream<StockPriceUpdate> getPriceStream() {
+    return _remoteDataSource.getPriceStream().map((message) {
+      // Data → Domain 변환은 Repository에서만 담당
+      final m = message as StockSocketMessagePriceUpdate;
+      return StockPriceUpdate(
+        stockCode: m.stockCode,
+        currentPrice: m.currentPrice,
+        changeRate: m.changeRate,
+        timestamp: m.timestamp,
+      );
+    });
   }
 
   @override
-  Stream<StockEntity> getPriceStream() {
-    return _remoteDataSource.getPriceStream();
+  Future<void> addWatchlistItem(WatchlistItem item) {
+    return _localDataSource.addWatchlistItem(item);
   }
 
   @override

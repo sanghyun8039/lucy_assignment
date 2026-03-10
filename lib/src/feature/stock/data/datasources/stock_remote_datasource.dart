@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:lucy_assignment/src/feature/stock/data/datasources/stock_local_datasource.dart';
 import 'package:lucy_assignment/src/feature/stock/data/models/stock_model.dart';
-import 'package:lucy_assignment/src/feature/stock/domain/entities/stock_entity.dart';
 import 'package:lucy_assignment/src/feature/stock/data/datasources/realtime/stock_realtime_datasource.dart';
 import 'package:lucy_assignment/src/feature/stock/data/models/socket/stock_socket_message.dart';
 
 abstract class StockRemoteDataSource {
-  Stream<StockEntity> getPriceStream();
+  /// 실시간 가격 메시지 스트림. Domain 변환은 Repository 또는 UseCase에서 처리.
+  Stream<StockSocketMessage> getPriceStream();
   void setWatchedStocks(List<String> stockCodes);
 }
 
@@ -55,17 +55,9 @@ class MockStockRemoteDataSource implements StockRemoteDataSource {
   }
 
   @override
-  Stream<StockEntity> getPriceStream() {
+  Stream<StockSocketMessage> getPriceStream() {
     return _realtimeDataSource.messageStream
-        .whereType<StockSocketMessagePriceUpdate>()
-        .map((message) {
-          return StockEntity(
-            stockCode: message.stockCode,
-            currentPrice: message.currentPrice.toInt(),
-            changeRate: message.changeRate,
-            timestamp: message.timestamp,
-          );
-        });
+        .whereType<StockSocketMessagePriceUpdate>();
   }
 
   void _syncSubscriptions(List<String> desiredCodes) {

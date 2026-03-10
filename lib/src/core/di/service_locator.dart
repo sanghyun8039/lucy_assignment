@@ -17,7 +17,7 @@ import 'package:lucy_assignment/src/core/network/socket/mock_socket_client.dart'
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lucy_assignment/src/feature/watchlist/data/datasources/watchlist_local_datasource.dart';
 import 'package:lucy_assignment/src/feature/watchlist/data/repos/watchlist_repository_impl.dart';
-import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_item.dart';
+import 'package:lucy_assignment/src/feature/watchlist/data/models/watchlist_model.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/repos/watchlist_repository.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/usecases/add_watchlist_item_usecase.dart';
 import 'package:lucy_assignment/src/feature/watchlist/domain/usecases/get_price_stream_usecase.dart';
@@ -97,6 +97,6 @@ Future<void> initServiceLocator() async {
 
   // DataSources
   sl.registerLazySingleton<WatchlistLocalDataSource>(
-    () => WatchlistLocalDataSourceImpl(Hive.box<WatchlistItem>('watchlist')),
+    () => WatchlistLocalDataSourceImpl(Hive.box<WatchlistModel>('watchlist')),
   );
 }

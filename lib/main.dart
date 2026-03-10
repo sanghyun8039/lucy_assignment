@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lucy_assignment/src/core/design_system/design_system.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lucy_assignment/src/core/constants/alert_type.dart';
-import 'package:lucy_assignment/src/feature/watchlist/domain/entities/watchlist_item.dart';
+import 'package:lucy_assignment/src/feature/watchlist/data/models/watchlist_model.dart';
 import 'package:lucy_assignment/src/core/router/app_route.dart';
 import 'package:lucy_assignment/src/core/di/service_locator.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -19,9 +19,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initServiceLocator();
   await Hive.initFlutter();
-  Hive.registerAdapter(WatchlistItemAdapter());
+  Hive.registerAdapter(WatchlistModelAdapter());
   Hive.registerAdapter(AlertTypeAdapter());
-  await Hive.openBox<WatchlistItem>('watchlist');
+  await Hive.openBox<WatchlistModel>('watchlist');
 
   await dotenv.load(fileName: ".env");
 
